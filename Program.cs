@@ -13,6 +13,8 @@ namespace ChessAI
         [STAThread]
         public static void Main(string[] args)
         {
+
+
             GameState game = new GameState();
             //ChessNotation chessNotation = new ChessNotation();
             //Console.WriteLine(chessNotation.ToString());
@@ -20,6 +22,10 @@ namespace ChessAI
             string? userInput;
             while (true)
             {
+                string playerToMove = game.whiteToPlay? "White" : "Black";
+                Console.WriteLine($"Turn: {playerToMove}");
+                var moves = game.GetAllMoves();
+                Console.WriteLine(string.Join(", ", moves));
                 userInput = Console.ReadLine();
                 if (userInput == "undo")
                 {
@@ -28,8 +34,10 @@ namespace ChessAI
                     continue;
                 }
                 Move? userMove = Move.ToMove(userInput, game.board);
-                if (userMove!= null)
+                //Console.WriteLine(String.Join(", ", moves));
+                if (userMove != null && moves.Contains(userMove))
                 {
+
                     game.MakeMove(userMove);
                 }
                 else
@@ -40,6 +48,8 @@ namespace ChessAI
                 Console.WriteLine(game.ToString());
                 game.LogMoveHistory();
                 Console.WriteLine($"Played move: {ChessNotation.GetChessNotation(userMove)}");
+                Console.WriteLine(string.Join("\n", game.pieces));
+
             }
 
 

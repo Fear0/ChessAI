@@ -42,5 +42,16 @@ namespace ChessAI.Model
             return ChessNotation.colsToFiles[startPosition.Item2] + ChessNotation.rowsToRanks[startPosition.Item1] + ChessNotation.colsToFiles[endPosition.Item2] + ChessNotation.rowsToRanks[endPosition.Item1];
         }
 
+        public override bool Equals(object? obj)
+        {
+
+            if (obj is Move)
+            {
+                Move other = obj as Move;
+                if (other == null) return false;
+                return (this.startPosition.Item1 == other.startPosition.Item1) && (startPosition.Item2 == other.startPosition.Item2) && (this.endPosition.Item1 == other.endPosition.Item1) && (this.endPosition.Item2 == other.endPosition.Item2) && (this.pieceMoved.Equals(other.pieceMoved)) && (this.pieceCaptured.Equals(other.pieceCaptured));
+            }
+            return false;
+        }
     }
 }
