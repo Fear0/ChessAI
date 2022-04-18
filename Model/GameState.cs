@@ -17,7 +17,7 @@ namespace ChessAI.Model
             {"--","--","--","--","--","--","--","--" },
            {"--","--","--","--","--","--","--","--" },
             {"--","--","--","--","--","--","--","--" },
-            {"--","--","--","bQ","--","--","--","--" },
+            {"--","--","--","--","--","--","--","--" },
             { "wP","wP","wP","wP","wP","wP","wP","wP"},
             {"wR", "wN", "wB","wQ", "wK","wB","wN","wR"},
 
@@ -25,7 +25,9 @@ namespace ChessAI.Model
         };
 
         public List<Piece> pieces { get; } = new List<Piece>();
+
         public bool whiteToPlay;
+
         public List<Move> moveHisory = new List<Move>();
 
         public GameState()
@@ -34,6 +36,8 @@ namespace ChessAI.Model
             //Pawn pawn = new Pawn(0, 0, util.PieceType.Pawn, util.PieceColor.White);
             //var moves = pawn.GetPossibleMoves(this);
             this.whiteToPlay = true;
+
+            //pawns
             for (int i = 0; i < board.GetLength(0); i++)
             {
                 pieces.Add(new Pawn(6, i, PieceColor.White));
@@ -42,6 +46,32 @@ namespace ChessAI.Model
             {
                 pieces.Add(new Pawn(1, i, PieceColor.Black));
             }
+
+            //knights
+            pieces.Add(new Knight(7, 1 , PieceColor.White));
+            pieces.Add(new Knight(7, 6, PieceColor.White));
+            pieces.Add(new Knight(0, 1, PieceColor.Black));
+            pieces.Add(new Knight(0, 6, PieceColor.Black));
+
+            //bishops
+            pieces.Add(new Bishop(7, 2, PieceColor.White));
+            pieces.Add(new Bishop(7, 5, PieceColor.White));
+            pieces.Add(new Bishop(0, 2, PieceColor.Black));
+            pieces.Add(new Bishop(0, 5, PieceColor.Black));
+
+            //rooks
+            pieces.Add(new Rook(7, 0, PieceColor.White));
+            pieces.Add(new Rook(7, 7, PieceColor.White));
+            pieces.Add(new Rook(0, 0, PieceColor.Black));
+            pieces.Add(new Rook(0, 7, PieceColor.Black));
+
+            //queens
+            pieces.Add(new Queen(7, 3, PieceColor.White));
+            pieces.Add(new Queen(0, 3, PieceColor.Black));
+
+            //kings
+            pieces.Add(new King(7, 4, PieceColor.White));
+            pieces.Add(new King(0, 4, PieceColor.Black));
 
         }
 
@@ -56,9 +86,11 @@ namespace ChessAI.Model
         public List<Move> GetAllMoves()
         {
             List<Move> moves = new List<Move>();
+
+            var turn = this.whiteToPlay ? PieceColor.White : PieceColor.Black;
             foreach (var piece in pieces)
             {
-                if (piece.status == "alive")
+                if (piece.status == "alive" && piece.pieceColor == turn)
                 {
                     moves.AddRange(piece.GetPossibleMoves(this));
                 }
@@ -124,7 +156,7 @@ namespace ChessAI.Model
 
         public Piece GetPieceAtLocation(Tuple<int, int> pieceLocation, string pieceString)
         {
-            // fetch a specified piece at a particular position, helpful especially with captured piece that share the same position
+            // fetch a specified piece at a particular position, helpful especially with captured pieces that share the same position
             foreach (var piece in pieces)
             {
 
