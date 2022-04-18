@@ -16,12 +16,10 @@ namespace ChessAI.Model.util.Pieces
         public override List<Move> GetPossibleMoves(GameState gamestate)
         {
 
-            //List<Move> possibleQueenMoves = new List<Move>();
             PieceColor color = gamestate.whiteToPlay ? PieceColor.White : PieceColor.Black;
             // actually the color doesnt matter, bishops and rooks are the same regardless the color.
             Rook rook = new Rook(this.location.Item1, this.location.Item2, color);
             Bishop bishop = new Bishop(this.location.Item1, this.location.Item2, color);
-
             var rookMoves = rook.GetPossibleMoves(gamestate);
             var bishopMoves = bishop.GetPossibleMoves(gamestate);
 

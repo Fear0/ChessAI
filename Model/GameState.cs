@@ -48,7 +48,7 @@ namespace ChessAI.Model
             }
 
             //knights
-            pieces.Add(new Knight(7, 1 , PieceColor.White));
+            pieces.Add(new Knight(7, 1, PieceColor.White));
             pieces.Add(new Knight(7, 6, PieceColor.White));
             pieces.Add(new Knight(0, 1, PieceColor.Black));
             pieces.Add(new Knight(0, 6, PieceColor.Black));
