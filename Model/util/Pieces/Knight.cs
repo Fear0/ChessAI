@@ -39,7 +39,63 @@ namespace ChessAI.Model.util.Pieces
                 }
             }
 
-            
+            //if (row - 2 >= 0 && col + 1 <= limit)
+            //{
+            //    if (board[row - 2, col + 1] == "--" || board[row - 2, col + 1][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 2, col + 1), board));
+            //    }
+            //}
+            //if (row - 1 >= 0 && col + 2 <= limit)
+            //{
+            //    if (board[row - 1, col + 2] == "--" || board[row - 1, col + 2][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 2), board));
+            //    }
+            //}
+            //if (row - 1 >= 0 && col - 2 >= 0)
+            //{
+            //    if (board[row - 1, col - 2] == "--" || board[row - 1, col - 2][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 2), board));
+            //    }
+            //}
+            //if (row - 2 >= 0 && col - 1 >= 0)
+            //{
+            //    if (board[row - 2, col - 1] == "--" || board[row - 2, col - 1][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 2, col - 1), board));
+            //    }
+            //}
+            //if (row + 1 <= limit && col + 2 <= limit)
+            //{
+            //    if (board[row + 1, col + 2] == "--" || board[row + 1, col + 2][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 2), board));
+            //    }
+            //}
+            //if (row + 2 <= limit && col + 1 <= limit)
+            //{
+            //    if (board[row + 2, col + 1] == "--" || board[row + 2, col + 1][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 2, col + 1), board));
+            //    }
+            //}
+
+            //if (row + 2 <= limit && col - 1 >= 0)
+            //{
+            //    if (board[row + 2, col - 1] == "--" || board[row + 2, col - 1][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 2, col - 1), board));
+            //    }
+            //}
+            //if (row + 1 <= limit && col - 2 >= 0)
+            //{
+            //    if (board[row + 1, col - 2] == "--" || board[row + 1, col - 2][0] == opponent)
+            //    {
+            //        possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 2), board));
+            //    }
+            //}
 
             return possibleKnightMoves;
         }
