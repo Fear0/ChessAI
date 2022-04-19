@@ -46,7 +46,76 @@ namespace ChessAI.Model.util.Pieces
 
             }
 
-            
+            //if (row - 1 >= 0)
+            //{
+            //    if (board[row - 1, col] == "--" || board[row - 1, col][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col), board));
+            //    }
+            //}
+
+            ////south
+            //if (row + 1 <= limit)
+            //{
+            //    if (board[row + 1, col] == "--" || board[row + 1, col][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col), board));
+            //    }
+            //}
+
+            ////east
+            //if (col + 1 <= limit)
+            //{
+            //    if (board[row, col + 1] == "--" || board[row, col + 1][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row, col + 1), board));
+            //    }
+            //}
+
+            ////west
+            //if (col - 1 >= 0)
+            //{
+            //    if (board[row, col - 1] == "--" || board[row, col - 1][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row, col - 1), board));
+            //    }
+            //}
+
+            ////northeast
+            //if (col + 1 <= limit && row - 1 >= 0)
+            //{
+            //    if (board[row - 1, col + 1] == "--" || board[row - 1, col + 1][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board));
+            //    }
+            //}
+
+            ////northwest
+            //if (col - 1 >= 0 && row - 1 >= 0)
+            //{
+            //    if (board[row - 1, col - 1] == "--" || board[row - 1, col - 1][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board));
+            //    }
+            //}
+
+            ////southeast
+            //if (col + 1 <=limit && row + 1 <=limit)
+            //{
+            //    if (board[row + 1, col + 1] == "--" || board[row + 1, col + 1][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board));
+            //    }
+            //}
+
+            ////southwest
+            //if (col - 1 >= 0 && row + 1 <= limit)
+            //{
+            //    if (board[row + 1, col - 1] == "--" || board[row + 1, col - 1][0] == opponent)
+            //    {
+            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board));
+            //    }
+            //}
 
 
             return possibleKingMoves;

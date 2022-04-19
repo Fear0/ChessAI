@@ -21,8 +21,17 @@ namespace ChessAI
             Console.WriteLine(game.ToString());
             string? userInput;
             while (true)
-            {
+            {   
                 string playerToMove = game.whiteToPlay? "White" : "Black";
+
+                //Console.Write("Checks or Pins: ");
+                var checkInfo = game.CheckForPinsAndChecks();
+
+                Console.Write("Pins: ");
+                Console.WriteLine(String.Join(", ",checkInfo.Item2)); // log pins
+                Console.Write("Checks: ");
+                Console.WriteLine(String.Join(", ", checkInfo.Item3)); // log checks
+
                 Console.WriteLine($"Turn: {playerToMove}");
                 var moves = game.GetAllMoves();
                 Console.WriteLine(string.Join(", ", moves));
@@ -49,6 +58,7 @@ namespace ChessAI
                 game.LogMoveHistory();
                 Console.WriteLine($"Played move: {ChessNotation.GetChessNotation(userMove)}");
                 Console.WriteLine(string.Join("\n", game.pieces));
+                Console.WriteLine("\n");
 
             }
 

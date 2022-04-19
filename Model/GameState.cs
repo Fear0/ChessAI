@@ -30,6 +30,17 @@ namespace ChessAI.Model
 
         public List<Move> moveHisory = new List<Move>();
 
+        public Tuple<int, int> whiteKingLocation = Tuple.Create(7, 4);
+
+        public Tuple<int, int> blackKingLocation = Tuple.Create(0, 4);
+
+
+        public bool in_check = false;
+
+        public List<Tuple<int, int, int, int>> pins = new List<Tuple<int, int, int, int>>();  //(row,col,directioncoordinate 1, directioncoordinate 2)
+
+        public List<Tuple<int, int, int, int>> checks = new List<Tuple<int, int, int, int>>();
+
         public GameState()
         {
 
@@ -83,6 +94,12 @@ namespace ChessAI.Model
 
         }
 
+        public List<Move> GetValidMoves()
+        {
+            List<Move> validMoves = new List<Move>();
+
+            return validMoves;
+        }
         public List<Move> GetAllMoves()
         {
             List<Move> moves = new List<Move>();
@@ -98,6 +115,143 @@ namespace ChessAI.Model
 
             return moves;
         }
+
+        public (bool, List<Tuple<int, int, int, int>>, List<Tuple<int, int, int, int>>) CheckForPinsAndChecks()
+        {
+
+            pins = new List<Tuple<int, int, int, int>>(); //squares pinned and the direction it is pinned from
+
+            checks = new List<Tuple<int, int, int, int>>(); //squares of the enemy pieces that are applying checks
+
+            in_check = false;
+
+            PieceColor enemyColor, allyColor;
+
+            int startRow, startCol;
+
+            if (whiteToPlay)
+            {
+                enemyColor = PieceColor.Black;
+                allyColor = PieceColor.White;
+                startRow = whiteKingLocation.Item1;
+                startCol = whiteKingLocation.Item2;
+
+            }
+            else
+            {
+                enemyColor = PieceColor.White;
+                allyColor = PieceColor.Black;
+                startRow = blackKingLocation.Item1;
+                startCol = blackKingLocation.Item2;
+
+            }
+
+            // we will be going through directions, looking for pins or checks.
+            List<Tuple<int, int>> directions = new List<Tuple<int, int>>() { Tuple.Create(-1, 0), Tuple.Create(1, 0), Tuple.Create(0, 1), Tuple.Create(0, -1), Tuple.Create(-1, 1), Tuple.Create(-1, -1), Tuple.Create(1, 1), Tuple.Create(1, -1) };
+            int limit = board.GetLength(0) - 1;
+
+            for (int j = 0; j < directions.Count; j++)
+            {
+                var direction = directions[j];
+
+                List<Tuple<int, int, int, int>> possiblePins = new List<Tuple<int,int,int,int>>();
+                Tuple<int, int, int, int> possiblePin;
+
+                for (int i = 1; i < board.GetLength(0); i++)
+                {
+                    int endRow = startRow + direction.Item1 * i;
+                    int endCol = startCol + direction.Item2 * i;
+
+                    if (0 <= endRow && endRow <= limit && 0 <= endCol && endCol <= limit)
+                    {
+                        Piece piece = GetPieceAtLocation(Tuple.Create(endRow, endCol));
+
+                        if (piece != null && piece.pieceColor == allyColor && piece.pieceType != PieceType.King)
+                        {
+                            //no pin yet -> possible pin
+                            if (!possiblePins.Any())
+                            {
+                                possiblePin = Tuple.Create(endRow, endCol, direction.Item1, direction.Item2);
+                                possiblePins.Add(possiblePin); 
+                            }
+
+                            //second piece can't be pinned
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else if (piece != null && piece.pieceColor == enemyColor)
+                        {
+                            var enemyType = piece.pieceType;
+                            // 5 possibilities in this annoying conditional
+                            // 1.) orthogonally away from king and piece is a rook
+                            // 2.) diagonally away from king and piece is a bishop
+                            // 3.) 1 square away diagonally from king and piece is a pawn
+                            // 4.) any direction and piece is a queen
+                            //5.) any direction 1 square away and piece is a king
+
+                            if ((0 <= j && j <= 3 && enemyType == PieceType.Rook) || (4 <= j && j <= 7 && enemyType == PieceType.Bishop)
+                                    || (enemyType == PieceType.Queen) || (i == 1 && enemyType == PieceType.King) ||
+                                    (i == 1 && enemyType == PieceType.Pawn && ((enemyColor == PieceColor.White && 6 <= j && j <= 7) || (enemyColor == PieceColor.Black && 4 <= j && j <= 5))))
+                            {
+                                if (!possiblePins.Any()) //no pin so check
+                                {
+                                    in_check = true;
+                                    checks.Add(Tuple.Create(endRow,endCol, direction.Item1, direction.Item2));
+                                    break;
+                                }
+                                else // piece blocking so its a pin
+                                {
+                                    pins.AddRange(possiblePins);
+                                    break;
+                                }
+                            }
+                            else //enempy piece not applying check
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+
+                }
+
+            }
+
+            List<Tuple<int, int>> knightDirections = new List<Tuple<int, int>>() { Tuple.Create(-2, 1), Tuple.Create(-1, 2), Tuple.Create(-1, -2), Tuple.Create(-2, -1), Tuple.Create(1, 2), Tuple.Create(2, 1), Tuple.Create(2, -1), Tuple.Create(1, -2)};
+
+            foreach (var knightDirection in knightDirections)
+            {
+                var endRow = startRow + knightDirection.Item1;
+                var endCol = startCol + knightDirection.Item2;
+                
+                if (0 <= endRow && endRow <= limit && 0 <= endCol && endCol <= limit)
+                {
+                    var checkingPiece = GetPieceAtLocation(Tuple.Create(endRow, endCol));
+                    if (checkingPiece != null)
+                    {
+                        if (checkingPiece.pieceType == PieceType.Knight && checkingPiece.pieceColor == enemyColor)
+                        {
+                            in_check = true;
+                            checks.Add(Tuple.Create(endRow, endCol, knightDirection.Item1, knightDirection.Item2));
+                        }
+                    }
+                }
+            }
+
+            return (in_check, pins, checks);
+        }
+
+
+
+
+
+
         public GameState GenerateSuccessorState(Move move)
         {
             return null;
@@ -114,6 +268,17 @@ namespace ChessAI.Model
                 var movedPiece = this.GetPieceAtLocation(move.startPosition);
                 var capturedPiece = this.GetPieceAtLocation(move.endPosition);
                 movedPiece.location = move.endPosition;
+                if (movedPiece.pieceType == PieceType.King)
+                {
+                    if (whiteToPlay && movedPiece.pieceColor == PieceColor.White)
+                    {
+                        this.whiteKingLocation = movedPiece.location;
+                    }
+                    if (!whiteToPlay && movedPiece.pieceColor == PieceColor.Black)
+                    {
+                        this.blackKingLocation = movedPiece.location;
+                    }
+                }
                 if (capturedPiece != null)
                 {
                     capturedPiece.location = Tuple.Create(-1, -1);
