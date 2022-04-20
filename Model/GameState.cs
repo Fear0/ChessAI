@@ -94,12 +94,7 @@ namespace ChessAI.Model
 
         }
 
-        public List<Move> GetValidMoves()
-        {
-            List<Move> validMoves = new List<Move>();
 
-            return validMoves;
-        }
         public List<Move> GetAllMoves()
         {
             List<Move> moves = new List<Move>();
@@ -116,6 +111,93 @@ namespace ChessAI.Model
             return moves;
         }
 
+
+        public List<Move> GetValidMoves()
+        {
+
+            List<Move> validMoves = new List<Move>();
+
+            (this.in_check, this.pins, this.checks) = this.CheckForPinsAndChecks();
+
+            int limit = board.GetLength(0) - 1;
+
+
+            int kingRow, kingCol;
+
+            if (whiteToPlay)
+            {
+
+                kingRow = whiteKingLocation.Item1;
+                kingCol = whiteKingLocation.Item2;
+
+            }
+            else
+            {
+
+                kingRow = blackKingLocation.Item1;
+                kingCol = blackKingLocation.Item2;
+
+            }
+
+            if (this.in_check)
+            {
+                if (checks.Count == 1)
+                { // check from one piece, so either block or capture the piece or move the king
+                    validMoves = this.GetAllMoves();
+
+                    var check = this.checks[0];
+                    var checkRow = check.Item1;
+                    var checkCol = check.Item2;
+                    Piece checkingPiece = GetPieceAtLocation(Tuple.Create(checkRow, checkCol));
+                    List<Tuple<int, int>> validSquares = new List<Tuple<int, int>>();
+
+                    // check from a knight. Stop check by capturing the knight, thus its position is a valid square
+                    if (checkingPiece.pieceType == PieceType.Knight)
+                    {
+                        validSquares.Add(Tuple.Create(checkRow, checkCol));
+                    }
+                    else
+                    {
+                        // squares between the checked king's position and the checking piece are valid squares because moving to them will block check
+                        for (int i = 1; i < board.GetLength(0); i++)
+                        {
+                            Tuple<int, int> validSquare = Tuple.Create(kingRow + check.Item3 * i, kingRow + check.Item3 * i);
+                            validSquares.Add(validSquare);
+                            if (validSquare.Item1 == checkRow && validSquare.Item2 == checkCol)
+                            {
+                                break;
+                            }
+
+                        }
+                    }
+                    // remove the moves that dont block check, capture piece, or move king
+                    for (int i = validMoves.Count - 1; i >= 0; i--)
+                    {
+                        if (validMoves[i].pieceMoved[1] != 'K')
+                        {
+                            if (!validSquares.Contains(validMoves[i].endPosition))
+                            {
+                                validMoves.Remove(validMoves[i]);
+                            }
+                        }
+                    }
+
+
+                }
+                else // double check, king has to move
+                {
+                    validMoves.AddRange(GetPieceAtLocation(Tuple.Create(kingRow, kingCol)).GetPossibleMoves(this));
+                }
+            }
+            else //if no check, all pieces moves are valid
+            {
+                validMoves = this.GetAllMoves();
+            }
+            return validMoves;
+        }
+
+
+        // this idea of looking for pins and checks starting from the king instead of iterating through all enemy moves is inspired from Eddie Sharick's Tutorial. 
         public (bool, List<Tuple<int, int, int, int>>, List<Tuple<int, int, int, int>>) CheckForPinsAndChecks()
         {
 
@@ -154,8 +236,8 @@ namespace ChessAI.Model
             {
                 var direction = directions[j];
 
-                List<Tuple<int, int, int, int>> possiblePins = new List<Tuple<int,int,int,int>>();
-                Tuple<int, int, int, int> possiblePin;
+                //List<Tuple<int, int, int, int>> possiblePins = new List<Tuple<int,int,int,int>>();
+                Tuple<int, int, int, int>? possiblePin = null;
 
                 for (int i = 1; i < board.GetLength(0); i++)
                 {
@@ -169,10 +251,10 @@ namespace ChessAI.Model
                         if (piece != null && piece.pieceColor == allyColor && piece.pieceType != PieceType.King)
                         {
                             //no pin yet -> possible pin
-                            if (!possiblePins.Any())
+                            if (possiblePin == null)
                             {
                                 possiblePin = Tuple.Create(endRow, endCol, direction.Item1, direction.Item2);
-                                possiblePins.Add(possiblePin); 
+                                //possiblePins.Add(possiblePin); 
                             }
 
                             //second piece can't be pinned
@@ -195,15 +277,15 @@ namespace ChessAI.Model
                                     || (enemyType == PieceType.Queen) || (i == 1 && enemyType == PieceType.King) ||
                                     (i == 1 && enemyType == PieceType.Pawn && ((enemyColor == PieceColor.White && 6 <= j && j <= 7) || (enemyColor == PieceColor.Black && 4 <= j && j <= 5))))
                             {
-                                if (!possiblePins.Any()) //no pin so check
+                                if (possiblePin == null) //no pin so check
                                 {
                                     in_check = true;
-                                    checks.Add(Tuple.Create(endRow,endCol, direction.Item1, direction.Item2));
+                                    checks.Add(Tuple.Create(endRow, endCol, direction.Item1, direction.Item2));
                                     break;
                                 }
                                 else // piece blocking so its a pin
                                 {
-                                    pins.AddRange(possiblePins);
+                                    pins.Add(possiblePin);
                                     break;
                                 }
                             }
@@ -223,13 +305,13 @@ namespace ChessAI.Model
 
             }
 
-            List<Tuple<int, int>> knightDirections = new List<Tuple<int, int>>() { Tuple.Create(-2, 1), Tuple.Create(-1, 2), Tuple.Create(-1, -2), Tuple.Create(-2, -1), Tuple.Create(1, 2), Tuple.Create(2, 1), Tuple.Create(2, -1), Tuple.Create(1, -2)};
+            List<Tuple<int, int>> knightDirections = new List<Tuple<int, int>>() { Tuple.Create(-2, 1), Tuple.Create(-1, 2), Tuple.Create(-1, -2), Tuple.Create(-2, -1), Tuple.Create(1, 2), Tuple.Create(2, 1), Tuple.Create(2, -1), Tuple.Create(1, -2) };
 
             foreach (var knightDirection in knightDirections)
             {
                 var endRow = startRow + knightDirection.Item1;
                 var endCol = startCol + knightDirection.Item2;
-                
+
                 if (0 <= endRow && endRow <= limit && 0 <= endCol && endCol <= limit)
                 {
                     var checkingPiece = GetPieceAtLocation(Tuple.Create(endRow, endCol));
@@ -251,7 +333,7 @@ namespace ChessAI.Model
 
 
 
-
+        // to be used later on for AI 
         public GameState GenerateSuccessorState(Move move)
         {
             return null;

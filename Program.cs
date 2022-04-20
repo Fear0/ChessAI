@@ -14,26 +14,26 @@ namespace ChessAI
         public static void Main(string[] args)
         {
 
-
+            //Console.WriteLine(Tuple.Create(-1,0).Equals(new Tuple<int,int>(-1,0)));
             GameState game = new GameState();
             //ChessNotation chessNotation = new ChessNotation();
             //Console.WriteLine(chessNotation.ToString());
             Console.WriteLine(game.ToString());
             string? userInput;
             while (true)
-            {   
-                string playerToMove = game.whiteToPlay? "White" : "Black";
+            {
+                string playerToMove = game.whiteToPlay ? "White" : "Black";
 
                 //Console.Write("Checks or Pins: ");
                 var checkInfo = game.CheckForPinsAndChecks();
 
                 Console.Write("Pins: ");
-                Console.WriteLine(String.Join(", ",checkInfo.Item2)); // log pins
+                Console.WriteLine(String.Join(", ", checkInfo.Item2)); // log pins
                 Console.Write("Checks: ");
                 Console.WriteLine(String.Join(", ", checkInfo.Item3)); // log checks
 
                 Console.WriteLine($"Turn: {playerToMove}");
-                var moves = game.GetAllMoves();
+                var moves = game.GetValidMoves();
                 Console.WriteLine(string.Join(", ", moves));
                 userInput = Console.ReadLine();
                 if (userInput == "undo")
