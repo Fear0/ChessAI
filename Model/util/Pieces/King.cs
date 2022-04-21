@@ -25,6 +25,7 @@ namespace ChessAI.Model.util.Pieces
             var board = gamestate.board;
             int limit = board.GetLength(0) - 1;
             char opponent = gamestate.whiteToPlay ? 'b' : 'w';
+            char fellow = gamestate.whiteToPlay ? 'w' : 'b';
 
             //a king has 8 possible moves, which are the surrounding squares. (north,south,east,west,northeast,northwest,southeast,southwest)
             List<Tuple<int, int>> directions = new List<Tuple<int, int>>() { Tuple.Create(-1, 0), Tuple.Create(1, 0), Tuple.Create(0, 1), Tuple.Create(0, -1), Tuple.Create(-1, 1), Tuple.Create(-1, -1), Tuple.Create(1, 1), Tuple.Create(1, -1) };
@@ -36,86 +37,42 @@ namespace ChessAI.Model.util.Pieces
             {
                 i = 1;
 
-                if (0 <= row + direction.Item1 * i && row + direction.Item1 * i <= limit && 0 <= col + direction.Item2 * i && col + direction.Item2 * i <= limit)
+                var endRow = row + direction.Item1 * i;
+                var endCol = col + direction.Item2 * i;
+
+                if (0 <= endRow && endRow <= limit && 0 <= endCol && endCol <= limit)
                 {
                     if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--" || board[row + direction.Item1 * i, col + direction.Item2 * i][0] == opponent)
                     {
-                        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board));
+                        // we put the king in one of the possible squares
+                        if (fellow == 'w')
+                        {
+                            gamestate.whiteKingLocation = Tuple.Create(endRow, endCol);
+                        }
+                        else
+                        {
+                            gamestate.blackKingLocation = Tuple.Create(endRow, endCol);
+                        }
+
+                        var checkAndPinLog = gamestate.CheckForPinsAndChecks();
+
+                        if (!checkAndPinLog.Item1) // if putting the king on one of the possible squares doesnt lead to a check, then we have a valid king move
+                        {
+                            possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board));
+                        }
+
+                        if (fellow == 'w')
+                        {
+                            gamestate.whiteKingLocation = Tuple.Create(row, col);
+                        }
+                        else
+                        {
+                            gamestate.blackKingLocation = Tuple.Create(row, col);
+                        }
                     }
                 }
 
             }
-
-            //if (row - 1 >= 0)
-            //{
-            //    if (board[row - 1, col] == "--" || board[row - 1, col][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col), board));
-            //    }
-            //}
-
-            ////south
-            //if (row + 1 <= limit)
-            //{
-            //    if (board[row + 1, col] == "--" || board[row + 1, col][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col), board));
-            //    }
-            //}
-
-            ////east
-            //if (col + 1 <= limit)
-            //{
-            //    if (board[row, col + 1] == "--" || board[row, col + 1][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row, col + 1), board));
-            //    }
-            //}
-
-            ////west
-            //if (col - 1 >= 0)
-            //{
-            //    if (board[row, col - 1] == "--" || board[row, col - 1][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row, col - 1), board));
-            //    }
-            //}
-
-            ////northeast
-            //if (col + 1 <= limit && row - 1 >= 0)
-            //{
-            //    if (board[row - 1, col + 1] == "--" || board[row - 1, col + 1][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board));
-            //    }
-            //}
-
-            ////northwest
-            //if (col - 1 >= 0 && row - 1 >= 0)
-            //{
-            //    if (board[row - 1, col - 1] == "--" || board[row - 1, col - 1][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board));
-            //    }
-            //}
-
-            ////southeast
-            //if (col + 1 <=limit && row + 1 <=limit)
-            //{
-            //    if (board[row + 1, col + 1] == "--" || board[row + 1, col + 1][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board));
-            //    }
-            //}
-
-            ////southwest
-            //if (col - 1 >= 0 && row + 1 <= limit)
-            //{
-            //    if (board[row + 1, col - 1] == "--" || board[row + 1, col - 1][0] == opponent)
-            //    {
-            //        possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board));
-            //    }
-            //}
 
 
             return possibleKingMoves;

@@ -119,6 +119,12 @@ namespace ChessAI.Model
 
             (this.in_check, this.pins, this.checks) = this.CheckForPinsAndChecks();
 
+
+            Console.Write("Pins: ");
+            Console.WriteLine(String.Join(", ", this.pins)); // log pins
+            Console.Write("Checks: ");
+            Console.WriteLine(String.Join(", ", this.checks)); // log checks
+
             int limit = board.GetLength(0) - 1;
 
 
@@ -141,8 +147,9 @@ namespace ChessAI.Model
 
             if (this.in_check)
             {
+                // check from one piece, so either block or capture the piece or move the king
                 if (checks.Count == 1)
-                { // check from one piece, so either block or capture the piece or move the king
+                { 
                     validMoves = this.GetAllMoves();
 
                     var check = this.checks[0];
@@ -161,7 +168,7 @@ namespace ChessAI.Model
                         // squares between the checked king's position and the checking piece are valid squares because moving to them will block check
                         for (int i = 1; i < board.GetLength(0); i++)
                         {
-                            Tuple<int, int> validSquare = Tuple.Create(kingRow + check.Item3 * i, kingRow + check.Item3 * i);
+                            Tuple<int, int> validSquare = Tuple.Create(kingRow + check.Item3 * i, kingCol + check.Item4 * i);
                             validSquares.Add(validSquare);
                             if (validSquare.Item1 == checkRow && validSquare.Item2 == checkCol)
                             {
@@ -201,11 +208,11 @@ namespace ChessAI.Model
         public (bool, List<Tuple<int, int, int, int>>, List<Tuple<int, int, int, int>>) CheckForPinsAndChecks()
         {
 
-            pins = new List<Tuple<int, int, int, int>>(); //squares pinned and the direction it is pinned from
+            var pins = new List<Tuple<int, int, int, int>>(); //squares pinned and the direction it is pinned from
 
-            checks = new List<Tuple<int, int, int, int>>(); //squares of the enemy pieces that are applying checks
+            var checks = new List<Tuple<int, int, int, int>>(); //squares of the enemy pieces that are applying checks
 
-            in_check = false;
+            var in_check = false;
 
             PieceColor enemyColor, allyColor;
 

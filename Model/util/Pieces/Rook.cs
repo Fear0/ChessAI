@@ -27,7 +27,7 @@ namespace ChessAI.Model.util.Pieces
             char opponent = gamestate.whiteToPlay ? 'b' : 'w';
             char fellow = gamestate.whiteToPlay ? 'w' : 'b';
 
-            int i; //our index
+            int i; //our index for the moves
 
             bool piecePinned = false;
 
@@ -88,117 +88,6 @@ namespace ChessAI.Model.util.Pieces
                     }
                 }
             }
-
-
-            //East
-            //int i = 1;
-            //if (col + i <= limit)
-            //{
-
-            //    while ( col + i <= limit)
-            //    {
-            //        //check if path is blocked by ally piece 
-            //        if (board[row, col + i][0] == fellow)
-            //        {
-            //            break;
-            //        }
-            //        if (board[row, col + i] == "--" || board[row, col + i][0] == opponent)
-            //        {
-            //            possibleRookMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row, col + i), board));
-
-            //            // if capture occured, no move along the same path is valid
-            //            if (board[row, col + i][0] == opponent)
-            //            {
-            //                break;
-            //            }
-
-            //        }
-            //        i++;
-            //    }
-            //}
-
-
-            //i = 1;
-
-
-            ////West
-            //if (col - i >= 0)
-            //{
-
-            //    while (col - i >= 0)
-            //    {
-            //        if (board[row, col - i][0] == fellow)
-            //        {
-            //            break;
-            //        }
-            //        if (board[row, col - i] == "--" || board[row, col - i][0] == opponent)
-            //        {
-            //            possibleRookMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row, col - i), board));
-
-            //            if (board[row, col - i][0] == opponent)
-            //            {
-            //                break;
-            //            }
-
-            //        }
-            //        i++;
-            //    }
-
-            //}
-
-            //i = 1;
-
-            ////South
-            //if (row + i <= limit)
-            //{
-            //    while (row + i <= limit)
-            //    {
-            //        if (board[row + i, col][0] == fellow)
-            //        {
-            //            break;
-            //        }
-            //        if (board[row + i, col] == "--" || board[row + i, col][0] == opponent)
-            //        {
-            //            possibleRookMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + i, col), board));
-
-            //            if (board[row + i, col][0] == opponent)
-            //            {
-            //                break;
-            //            }
-
-            //        }
-            //        i++;
-            //    }
-
-            //}
-
-            //i = 1;
-
-            ////North
-            //if (row - i >= 0)
-            //{
-
-            //    while (row - i >= 0)
-            //    {
-            //        if (board[row - i, col][0] == fellow)
-            //        {
-            //            break;
-            //        }
-            //        if (board[row - i, col] == "--" || board[row - i, col][0] == opponent)
-            //        {
-            //            possibleRookMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - i, col), board));
-
-            //            if (board[row - i, col][0] == opponent)
-            //            {
-            //                break;
-            //            }
-
-            //        }
-            //        i++;
-            //    }
-
-            //}
-
 
 
             return possibleRookMoves;

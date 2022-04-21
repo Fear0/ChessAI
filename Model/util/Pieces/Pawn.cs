@@ -66,7 +66,7 @@ namespace ChessAI.Model.util.Pieces
                 {
                     if (board[row - 1, col - 1][0].Equals('b'))
                     {
-                        if (!piecePinned || pinDirection == Tuple.Create(-1, -1))
+                        if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board));
                         }
@@ -78,7 +78,7 @@ namespace ChessAI.Model.util.Pieces
                 {
                     if (board[row - 1, col + 1][0].Equals('b'))
                     {
-                        if (!piecePinned || pinDirection == Tuple.Create(-1, 1))
+                        if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, 1)))
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board));
                         }
@@ -90,7 +90,7 @@ namespace ChessAI.Model.util.Pieces
 
                 if (board[row + 1, col] == "--")
                 {
-                    if (!piecePinned || pinDirection == Tuple.Create(1, 0))
+                    if (!piecePinned || pinDirection.Equals(Tuple.Create(1, 0)))
                     {
                         possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col), board));
                         if (row == 1 && board[row + 2, col] == "--")
@@ -106,7 +106,7 @@ namespace ChessAI.Model.util.Pieces
                     if (board[row + 1, col - 1][0].Equals('w'))
                     {
 
-                        if (!piecePinned || pinDirection == Tuple.Create(1, -1))
+                        if (!piecePinned || pinDirection.Equals(Tuple.Create(1, -1)))
                         {
 
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board));
@@ -120,7 +120,7 @@ namespace ChessAI.Model.util.Pieces
                 {
                     if (board[row + 1, col + 1][0].Equals('w'))
                     {
-                        if (!piecePinned || pinDirection == Tuple.Create(1, 1))
+                        if (!piecePinned || pinDirection.Equals(Tuple.Create(1, 1)))
 
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board));

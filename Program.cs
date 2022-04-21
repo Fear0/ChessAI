@@ -25,16 +25,21 @@ namespace ChessAI
                 string playerToMove = game.whiteToPlay ? "White" : "Black";
 
                 //Console.Write("Checks or Pins: ");
-                var checkInfo = game.CheckForPinsAndChecks();
+                //var checkInfo = game.CheckForPinsAndChecks();
 
-                Console.Write("Pins: ");
-                Console.WriteLine(String.Join(", ", checkInfo.Item2)); // log pins
-                Console.Write("Checks: ");
-                Console.WriteLine(String.Join(", ", checkInfo.Item3)); // log checks
+              
 
                 Console.WriteLine($"Turn: {playerToMove}");
                 var moves = game.GetValidMoves();
                 Console.WriteLine(string.Join(", ", moves));
+
+
+                //Console.Write("Pins: ");
+                //Console.WriteLine(String.Join(", ", game.pins)); // log pins
+                //Console.Write("Checks: ");
+                //Console.WriteLine(String.Join(", ", game.checks)); // log checks
+
+
                 userInput = Console.ReadLine();
                 if (userInput == "undo")
                 {
