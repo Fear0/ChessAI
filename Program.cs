@@ -31,6 +31,27 @@ namespace ChessAI
 
                 Console.WriteLine($"Turn: {playerToMove}");
                 var moves = game.GetValidMoves();
+
+                if (game.checkmate)
+                {
+                    if (game.whiteToPlay)
+                    {
+                        Console.WriteLine("Checkmate, Black wins");
+                        break;
+                    } else
+                    {
+                        Console.WriteLine("Checkmate, White wins");
+                        break;
+
+                    }
+                }
+                if (game.stalemate)
+                {
+                    Console.WriteLine("Checkmate, Draw");
+                    break;
+
+                }
+
                 Console.WriteLine(string.Join(", ", moves));
 
 

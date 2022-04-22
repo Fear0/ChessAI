@@ -13,12 +13,18 @@ namespace ChessAI.Model
         public string pieceMoved { get; }
         public string pieceCaptured { get; }
 
-        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board)
+        public bool is_pawn_promotion = false;
+
+        public bool is_enpassant_move = false;
+
+        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, bool isEnPassant = false)
         {
             startPosition = startPos;
             endPosition = endPos;
             pieceMoved = board[startPos.Item1, startPos.Item2];
             pieceCaptured = board[endPos.Item1, endPos.Item2];
+            is_pawn_promotion = (pieceMoved == "wP" && endPosition.Item1 == 0) || (pieceMoved == "bP" && endPosition.Item1 == board.GetLength(0) - 1);
+            is_enpassant_move = isEnPassant;
         }
 
 

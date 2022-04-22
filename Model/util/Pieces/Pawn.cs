@@ -44,10 +44,9 @@ namespace ChessAI.Model.util.Pieces
 
                 if (board[row - 1, col] == "--")
                 {
-                    //if (row == 5 && col == 4) Console.WriteLine("9bal");
-                  
+
                     if (!piecePinned || pinDirection.Equals(new Tuple<int, int>(-1, 0)))
-                  
+
                     {
                         //move 1 square forward
                         possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col), board));
@@ -64,11 +63,16 @@ namespace ChessAI.Model.util.Pieces
                 //capture left
                 if (col > 0)
                 {
-                    if (board[row - 1, col - 1][0].Equals('b'))
+                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                     {
-                        if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
+                        if (board[row - 1, col - 1][0].Equals('b'))
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board));
+                        }
+                        if (Tuple.Create(row - 1, col - 1).Equals(gamestate.enPassantPossible))
+                        {
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board, true));
+
                         }
                     }
                 }
@@ -76,11 +80,16 @@ namespace ChessAI.Model.util.Pieces
                 //capture right
                 if (col < 7)
                 {
-                    if (board[row - 1, col + 1][0].Equals('b'))
+                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                     {
-                        if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, 1)))
+                        if (board[row - 1, col + 1][0].Equals('b'))
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board));
+                        }
+                        if (Tuple.Create(row - 1, col + 1).Equals(gamestate.enPassantPossible))
+                        {
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board, true));
+
                         }
                     }
                 }
@@ -103,13 +112,15 @@ namespace ChessAI.Model.util.Pieces
                 //capture left
                 if (col > 0)
                 {
-                    if (board[row + 1, col - 1][0].Equals('w'))
+                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                     {
-
-                        if (!piecePinned || pinDirection.Equals(Tuple.Create(1, -1)))
+                        if (board[row + 1, col - 1][0].Equals('b'))
                         {
-
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board));
+                        }
+                        if (Tuple.Create(row + 1, col - 1).Equals(gamestate.enPassantPossible))
+                        {
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board, true));
 
                         }
                     }
@@ -118,14 +129,17 @@ namespace ChessAI.Model.util.Pieces
                 //capture right
                 if (col < 7)
                 {
-                    if (board[row + 1, col + 1][0].Equals('w'))
+                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                     {
-                        if (!piecePinned || pinDirection.Equals(Tuple.Create(1, 1)))
-
+                        if (board[row + 1, col + 1][0].Equals('b'))
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board));
                         }
+                        if (Tuple.Create(row + 1, col + 1).Equals(gamestate.enPassantPossible))
+                        {
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board,  true));
 
+                        }
                     }
                 }
 

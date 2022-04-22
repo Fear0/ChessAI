@@ -35,7 +35,13 @@ namespace ChessAI.Model
         public Tuple<int, int> blackKingLocation = Tuple.Create(0, 4);
 
 
+        public bool checkmate = false;
+
+        public bool stalemate = false;
+
         public bool in_check = false;
+
+        public Tuple<int, int> enPassantPossible = new Tuple<int, int>(-1, -1);
 
         public List<Tuple<int, int, int, int>> pins = new List<Tuple<int, int, int, int>>();  //(row,col,directioncoordinate 1, directioncoordinate 2)
 
@@ -112,6 +118,8 @@ namespace ChessAI.Model
         }
 
 
+
+        //If no check. Then return all possible moves of the pieces. Otherwise, trim all the possible moves so it cuts off the moves that dont put the king out of check.
         public List<Move> GetValidMoves()
         {
 
@@ -149,7 +157,7 @@ namespace ChessAI.Model
             {
                 // check from one piece, so either block or capture the piece or move the king
                 if (checks.Count == 1)
-                { 
+                {
                     validMoves = this.GetAllMoves();
 
                     var check = this.checks[0];
@@ -195,10 +203,23 @@ namespace ChessAI.Model
                 {
                     validMoves.AddRange(GetPieceAtLocation(Tuple.Create(kingRow, kingCol)).GetPossibleMoves(this));
                 }
+
+                if (!validMoves.Any())
+                {
+                    this.checkmate = true;
+                }
             }
             else //if no check, all pieces moves are valid
             {
                 validMoves = this.GetAllMoves();
+            }
+
+            if (!this.in_check)
+            {
+                if (!validMoves.Any())
+                {
+                    this.stalemate = true;
+                }
             }
             return validMoves;
         }
@@ -312,6 +333,7 @@ namespace ChessAI.Model
 
             }
 
+            //knight checks
             List<Tuple<int, int>> knightDirections = new List<Tuple<int, int>>() { Tuple.Create(-2, 1), Tuple.Create(-1, 2), Tuple.Create(-1, -2), Tuple.Create(-2, -1), Tuple.Create(1, 2), Tuple.Create(2, 1), Tuple.Create(2, -1), Tuple.Create(1, -2) };
 
             foreach (var knightDirection in knightDirections)
@@ -348,6 +370,9 @@ namespace ChessAI.Model
 
         public void MakeMove(Move move)
         {
+            
+                Console.WriteLine(move.is_enpassant_move);
+            
             //assume that all moves are valid. Validation will be encapsuled somewhere else
             if (move is not null && this.board[move.startPosition.Item1, move.startPosition.Item2] != "--")
             {
@@ -355,22 +380,73 @@ namespace ChessAI.Model
                 this.board[move.endPosition.Item1, move.endPosition.Item2] = move.pieceMoved;
                 this.moveHisory.Add(move);
                 var movedPiece = this.GetPieceAtLocation(move.startPosition);
-                var capturedPiece = this.GetPieceAtLocation(move.endPosition);
-                movedPiece.location = move.endPosition;
-                if (movedPiece.pieceType == PieceType.King)
+                Piece? capturedPiece;
+
+                if (move.is_enpassant_move)
                 {
-                    if (whiteToPlay && movedPiece.pieceColor == PieceColor.White)
+                    capturedPiece = this.GetPieceAtLocation(Tuple.Create(move.startPosition.Item1, move.endPosition.Item2));
+                }
+                else
+                {
+                    capturedPiece = this.GetPieceAtLocation(move.endPosition);
+                }
+
+                if (movedPiece != null)
+                {
+
+                    //pawn promotion to a queen
+                    if (move.is_pawn_promotion)
                     {
-                        this.whiteKingLocation = movedPiece.location;
+                        var color = movedPiece.pieceColor;
+                        if (color == PieceColor.White)
+                        {
+                            this.board[move.endPosition.Item1, move.endPosition.Item2] = "wQ";
+                            this.pieces.Remove(movedPiece);
+                            this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.White));
+
+                        }
+                        else
+                        {
+                            this.board[move.endPosition.Item1, move.endPosition.Item2] = "bQ";
+                            this.pieces.Remove(movedPiece);
+                            this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.Black));
+                        }
+
                     }
-                    if (!whiteToPlay && movedPiece.pieceColor == PieceColor.Black)
+
+                    // en passant move captures the pawn that advanced 2 squares.
+                    if (move.is_enpassant_move)
                     {
-                        this.blackKingLocation = movedPiece.location;
+                        this.board[move.startPosition.Item1, move.endPosition.Item2] = "--";
+
                     }
+
+                    // if opponent pawn moves 2 squares forward, then en passant capture is possible
+                    if (movedPiece.pieceType == PieceType.Pawn && Math.Abs(move.startPosition.Item1 - move.endPosition.Item1) == 2)
+                    {
+                        this.enPassantPossible = Tuple.Create((move.startPosition.Item1 + move.endPosition.Item1) / 2, move.startPosition.Item2);
+                    }
+                    else //en passant is only valid for the turn in which the pawn was advanced.
+                    {
+                        this.enPassantPossible = Tuple.Create(-1, -1);
+
+                    }
+                    movedPiece.location = move.endPosition;
+                    if (movedPiece.pieceType == PieceType.King)
+                    {
+                        if (whiteToPlay && movedPiece.pieceColor == PieceColor.White)
+                        {
+                            this.whiteKingLocation = movedPiece.location;
+                        }
+                        if (!whiteToPlay && movedPiece.pieceColor == PieceColor.Black)
+                        {
+                            this.blackKingLocation = movedPiece.location;
+                        }
+                    }
+
                 }
                 if (capturedPiece != null)
                 {
-                    capturedPiece.location = Tuple.Create(-1, -1);
                     capturedPiece.status = "captured";
                 }
                 this.whiteToPlay = !whiteToPlay; //switch turns
@@ -425,7 +501,7 @@ namespace ChessAI.Model
             }
             return null;
         }
-        public Piece GetPieceAtLocation(Tuple<int, int> pieceLocation)
+        public Piece? GetPieceAtLocation(Tuple<int, int> pieceLocation)
         {
             // fetch the piece at a specific location
             foreach (var piece in pieces)
