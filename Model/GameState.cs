@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ChessAI.Model.util.Pieces;
 using ChessAI.Model.util;
+using System.Text.RegularExpressions;
 
 namespace ChessAI.Model
 {
@@ -41,11 +42,13 @@ namespace ChessAI.Model
 
         public bool in_check = false;
 
-        public Tuple<int, int> enPassantPossible = new Tuple<int, int>(-1, -1);
+        public Tuple<int, int> enPassantPossible;
 
         public List<Tuple<int, int, int, int>> pins = new List<Tuple<int, int, int, int>>();  //(row,col,directioncoordinate 1, directioncoordinate 2)
 
         public List<Tuple<int, int, int, int>> checks = new List<Tuple<int, int, int, int>>();
+
+        public CastleRights currentCastleRights = new CastleRights(true, true, true, true);
 
         public GameState()
         {
@@ -212,6 +215,9 @@ namespace ChessAI.Model
             else //if no check, all pieces moves are valid
             {
                 validMoves = this.GetAllMoves();
+                var castleMoves = whiteToPlay ? GetCastleMoves(whiteKingLocation) : GetCastleMoves(blackKingLocation);
+                //Console.WriteLine("Castles moves: " + string.Join(", ", castleMoves));
+                validMoves.AddRange(whiteToPlay ? GetCastleMoves(whiteKingLocation) : GetCastleMoves(blackKingLocation));
             }
 
             if (!this.in_check)
@@ -358,9 +364,159 @@ namespace ChessAI.Model
             return (in_check, pins, checks);
         }
 
+        public bool IsSquareUnderAttack(Tuple<int, int> location)
+        {
+            //look if an opponent piece can attack the specified square
+            //switch turns
+            this.whiteToPlay = !this.whiteToPlay;
+            var opponentMoves = GetAllMoves();
+            //switch back turns
+            this.whiteToPlay = !this.whiteToPlay;
+
+            foreach (var move in opponentMoves)
+            {
+                if (move.endPosition.Equals(location))
+                {
+                    return true;
+                }
+            }
+
+
+            return false;
+        }
+
+
+        //get castle moves for a given king's position
+        public List<Move> GetCastleMoves(Tuple<int, int> location)
+        {
+            List<Move> castleMoves = new List<Move>();
+            if (IsSquareUnderAttack(location))
+            {
+                return castleMoves;
+            }
+            if ((this.whiteToPlay && this.currentCastleRights.wKs) || (!this.whiteToPlay && this.currentCastleRights.bKs))
+            {
+                castleMoves.AddRange(this.GetKingsideCastleMoves(location));
+            }
+            if ((this.whiteToPlay && this.currentCastleRights.wQs) || (!this.whiteToPlay && this.currentCastleRights.bQs))
+            {
+                castleMoves.AddRange(this.GetQueensideCastleMoves(location));
+
+            }
+
+            return castleMoves;
+        }
+
+        //get king side castle moves for black and white
+        public List<Move> GetKingsideCastleMoves(Tuple<int, int> location)
+        {
+            List<Move> kingsidecastlemoves = new List<Move>();
+            var kingRow = location.Item1;
+            var kingCol = location.Item2;
+
+            if (this.board[kingRow, kingCol + 1] == "--" && this.board[kingRow, kingCol + 2] == "--" && this.board[kingRow, kingCol + 3][1].Equals('R'))
+            {
+                if (!IsSquareUnderAttack(Tuple.Create(kingRow, kingCol + 1)) && !IsSquareUnderAttack(Tuple.Create(kingRow, kingCol + 2)))
+                {
+
+                    kingsidecastlemoves.Add(new Move(location, Tuple.Create(kingRow, kingCol + 2), board, isCastle: true));
+
+                }
+            }
+
+            return kingsidecastlemoves;
+        }
+
+
+        //get queen side castle moves for black and white
+        public List<Move> GetQueensideCastleMoves(Tuple<int, int> location)
+        {
+            List<Move> queensidecastlemoves = new List<Move>();
+            var kingRow = location.Item1;
+            var kingCol = location.Item2;
+
+            if (this.board[kingRow, kingCol - 1] == "--" && this.board[kingRow, kingCol - 2] == "--" && this.board[kingRow, kingCol - 3] == "--" && this.board[kingRow, kingCol - 4][1].Equals('R'))
+            {
+                if (!IsSquareUnderAttack(Tuple.Create(kingRow, kingCol - 1)) && !IsSquareUnderAttack(Tuple.Create(kingRow, kingCol - 2)))
+                {
+
+                    queensidecastlemoves.Add(new Move(location, Tuple.Create(kingRow, kingCol - 2), board, isCastle: true));
+
+                }
+            }
+
+            return queensidecastlemoves;
+        }
 
 
 
+        private void UpdateCastleRights(Move move)
+        {
+            var limit = board.GetLength(0);
+
+            if (move.pieceCaptured == "wR")
+            {
+                if (move.endPosition.Item2 == limit)
+                { // right rook
+                    this.currentCastleRights.wKs = false;
+                }
+                else if (move.endPosition.Item2 == 0) //left rook
+                {
+                    this.currentCastleRights.wQs = false;
+                }
+            }
+            else if (move.pieceCaptured == "bR")
+            {
+                if (move.endPosition.Item2 == limit)
+                { // right rook
+                    this.currentCastleRights.bKs = false;
+                }
+                else if (move.endPosition.Item2 == 0) //left rook
+                {
+                    this.currentCastleRights.bQs = false;
+                }
+            }
+
+            if (move.pieceMoved == "wR")
+            {
+                if (move.startPosition.Item1 == limit)
+                {
+                    if (move.startPosition.Item2 == limit)
+                    {
+                        this.currentCastleRights.wKs = false;
+                    }
+                    else if (move.startPosition.Item2 == 0)
+                    {
+                        this.currentCastleRights.wQs = false;
+                    }
+                }
+            }
+            else if (move.pieceMoved == "bR")
+            {
+                if (move.startPosition.Item1 == 0)
+                {
+                    if (move.startPosition.Item2 == limit)
+                    {
+                        this.currentCastleRights.bKs = false;
+                    }
+                    else if (move.startPosition.Item2 == 0)
+                    {
+                        this.currentCastleRights.bQs = false;
+                    }
+                }
+            }
+            if (move.pieceMoved == "wK")
+            {
+                this.currentCastleRights.wKs = false;
+                this.currentCastleRights.wQs = false;
+            }
+            else if (move.pieceMoved == "bK")
+            {
+                currentCastleRights.bKs = false;
+                currentCastleRights.bQs = false;
+            }
+
+        }
 
         // to be used later on for AI 
         public GameState GenerateSuccessorState(Move move)
@@ -370,9 +526,9 @@ namespace ChessAI.Model
 
         public void MakeMove(Move move)
         {
-            
-                Console.WriteLine(move.is_enpassant_move);
-            
+
+            Console.WriteLine(move.is_enpassant_move);
+
             //assume that all moves are valid. Validation will be encapsuled somewhere else
             if (move is not null && this.board[move.startPosition.Item1, move.startPosition.Item2] != "--")
             {
@@ -424,12 +580,31 @@ namespace ChessAI.Model
                     // if opponent pawn moves 2 squares forward, then en passant capture is possible
                     if (movedPiece.pieceType == PieceType.Pawn && Math.Abs(move.startPosition.Item1 - move.endPosition.Item1) == 2)
                     {
-                        this.enPassantPossible = Tuple.Create((move.startPosition.Item1 + move.endPosition.Item1) / 2, move.startPosition.Item2);
+                        this.enPassantPossible = Tuple.Create((move.endPosition.Item1 + move.startPosition.Item1) / 2, move.startPosition.Item2);
                     }
                     else //en passant is only valid for the turn in which the pawn was advanced.
                     {
                         this.enPassantPossible = Tuple.Create(-1, -1);
 
+                    }
+
+                    if (move.is_castle_move)
+                    {
+                        if (move.endPosition.Item2 - move.startPosition.Item2 == 2) // a king side castle took place
+                        {
+                            this.board[move.endPosition.Item1, move.endPosition.Item2 - 1] = this.board[move.endPosition.Item1, move.endPosition.Item2 + 1]; //putting the rook on its new square
+                            this.board[move.endPosition.Item1, move.endPosition.Item2 + 1] = "--";
+                            var rook = GetPieceAtLocation(Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 + 1));
+                            rook.location = Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 - 1);
+
+                        }
+                        else // a queen side caste took place
+                        {
+                            this.board[move.endPosition.Item1, move.endPosition.Item2 + 1] = this.board[move.endPosition.Item1, move.endPosition.Item2 - 2];
+                            this.board[move.endPosition.Item1, move.endPosition.Item2 - 2] = "--";
+                            var rook = GetPieceAtLocation(Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 - 2));
+                            rook.location = Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 + 1);
+                        }
                     }
                     movedPiece.location = move.endPosition;
                     if (movedPiece.pieceType == PieceType.King)
@@ -449,11 +624,15 @@ namespace ChessAI.Model
                 {
                     capturedPiece.status = "captured";
                 }
+
+                this.UpdateCastleRights(move);
                 this.whiteToPlay = !whiteToPlay; //switch turns
 
                 // to do
             }
         }
+
+
 
         public void Undo()
         {
@@ -519,6 +698,38 @@ namespace ChessAI.Model
 
         }
 
+        public static Move? FindMoveByUserInput(List<Move> moves, string input)
+        {
+
+            foreach (var move in moves)
+            {
+                if (input == "O-O" && move.pieceMoved[1].Equals('K') && move.endPosition.Item2 == 6)
+                {
+
+                    return move;
+                }
+                else if (input == "O-O-O" && move.pieceMoved[1].Equals('K') && move.endPosition.Item2 == 2)
+                {
+                    return move;
+                }
+            }
+
+            var rx = new Regex(@"[a-h][1-8][a-h][1-8]", RegexOptions.Compiled);
+
+            if (rx.IsMatch(input))
+            {
+                Tuple<int, int> startPos = Tuple.Create(ChessNotation.ranksToRows[input[1].ToString()], ChessNotation.filesToCols[input[0].ToString()]);
+                Tuple<int, int> endPos = Tuple.Create(ChessNotation.ranksToRows[input[3].ToString()], ChessNotation.filesToCols[input[2].ToString()]);
+                foreach (var move in moves)
+                {
+                    if (move.startPosition.Equals(startPos) && move.endPosition.Equals(endPos))
+                    {
+                        return move;
+                    }
+                }
+            }
+            return null;
+        }
 
         public override string ToString()
         {

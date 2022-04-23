@@ -68,7 +68,7 @@ namespace ChessAI
                     Console.WriteLine(game.ToString());
                     continue;
                 }
-                Move? userMove = Move.ToMove(userInput, game.board);
+                Move? userMove = GameState.FindMoveByUserInput(moves,userInput);
                 //Console.WriteLine(string.Join(", ", moves));
                 if (userMove != null && moves.Contains(userMove))
                 {

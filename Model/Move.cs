@@ -17,7 +17,9 @@ namespace ChessAI.Model
 
         public bool is_enpassant_move = false;
 
-        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, bool isEnPassant = false)
+        public bool is_castle_move = false;
+
+        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, bool isEnPassant = false, bool isCastle = false)
         {
             startPosition = startPos;
             endPosition = endPos;
@@ -25,26 +27,39 @@ namespace ChessAI.Model
             pieceCaptured = board[endPos.Item1, endPos.Item2];
             is_pawn_promotion = (pieceMoved == "wP" && endPosition.Item1 == 0) || (pieceMoved == "bP" && endPosition.Item1 == board.GetLength(0) - 1);
             is_enpassant_move = isEnPassant;
+            is_castle_move = isCastle;
         }
 
 
-        public static Move? ToMove(string? input, string[,] board)
-        {
+        // bad method, it doesn't hold the info of the move
+        //public static Move? ToMove(string? input, GameState state)
+        //{
 
-            var rx = new Regex(@"[a-h][1-8][a-h][1-8]", RegexOptions.Compiled);
-            if (rx.IsMatch(input))
-            {
-                Tuple<int, int> startPos = Tuple.Create(ChessNotation.ranksToRows[input[1].ToString()], ChessNotation.filesToCols[input[0].ToString()]);
-                Tuple<int, int> endPos = Tuple.Create(ChessNotation.ranksToRows[input[3].ToString()], ChessNotation.filesToCols[input[2].ToString()]);
+        //    var rx = new Regex(@"[a-h][1-8][a-h][1-8]", RegexOptions.Compiled);
+        //    if (rx.IsMatch(input))
+        //    {
+        //        Tuple<int, int> startPos = Tuple.Create(ChessNotation.ranksToRows[input[1].ToString()], ChessNotation.filesToCols[input[0].ToString()]);
+        //        Tuple<int, int> endPos = Tuple.Create(ChessNotation.ranksToRows[input[3].ToString()], ChessNotation.filesToCols[input[2].ToString()]);
 
 
-                return new Move(startPos, endPos, board);
-            }
-            return null;
-        }
+        //        return new Move(startPos, endPos, state.board);
+        //    }
+        //    return null;
+        //}
 
         public override string ToString()
         {
+            if (is_castle_move) // O-O for short castle (ks) and O-O-O for long casle (qs)
+            {  
+                if (this.endPosition.Item2 == 6)
+                {
+                    return "O-O";
+                }
+                else if (this.endPosition.Item2 == 2 )
+                {
+                    return "O-O-O";
+                }
+            }
             return ChessNotation.colsToFiles[startPosition.Item2] + ChessNotation.rowsToRanks[startPosition.Item1] + ChessNotation.colsToFiles[endPosition.Item2] + ChessNotation.rowsToRanks[endPosition.Item1];
         }
 

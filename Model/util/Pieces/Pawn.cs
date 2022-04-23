@@ -39,6 +39,7 @@ namespace ChessAI.Model.util.Pieces
                 }
             }
 
+            //white pawn move
             if (gamestate.whiteToPlay && this.pieceColor == PieceColor.White)
             {
 
@@ -71,6 +72,7 @@ namespace ChessAI.Model.util.Pieces
                         }
                         if (Tuple.Create(row - 1, col - 1).Equals(gamestate.enPassantPossible))
                         {
+
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board, true));
 
                         }
@@ -88,12 +90,15 @@ namespace ChessAI.Model.util.Pieces
                         }
                         if (Tuple.Create(row - 1, col + 1).Equals(gamestate.enPassantPossible))
                         {
+                            //Console.WriteLine("hani houni felabyedh");
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board, true));
 
                         }
                     }
                 }
             }
+
+            //black pawn move
             if (!gamestate.whiteToPlay && this.pieceColor == PieceColor.Black)
             {
 
@@ -114,12 +119,13 @@ namespace ChessAI.Model.util.Pieces
                 {
                     if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                     {
-                        if (board[row + 1, col - 1][0].Equals('b'))
+                        if (board[row + 1, col - 1][0].Equals('w'))
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board));
                         }
                         if (Tuple.Create(row + 1, col - 1).Equals(gamestate.enPassantPossible))
                         {
+
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board, true));
 
                         }
@@ -131,13 +137,14 @@ namespace ChessAI.Model.util.Pieces
                 {
                     if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                     {
-                        if (board[row + 1, col + 1][0].Equals('b'))
+                        if (board[row + 1, col + 1][0].Equals('w'))
                         {
                             possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board));
                         }
                         if (Tuple.Create(row + 1, col + 1).Equals(gamestate.enPassantPossible))
                         {
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board,  true));
+                            //Console.WriteLine("hani houni felak7el");
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board, true));
 
                         }
                     }
