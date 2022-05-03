@@ -6,14 +6,21 @@ using System.Threading.Tasks;
 
 namespace ChessAI.Model.util.Pieces
 {
-    internal class Bishop : Piece
+    public class Bishop : Piece
     {
-
+      
         public Bishop(int row, int col, PieceColor color) : base(row, col, color)
         {
             pieceType = PieceType.Bishop;
+            score = 30;
         }
 
+        //public void InitializeBishop(int row, int col , PieceColor color)
+        //{
+        //    base.Initialize(row, col, color);
+        //    pieceType = PieceType.Bishop;
+        //    score = 3;
+        //}
 
         public override List<Move> GetPossibleMoves(GameState gamestate)
         {
@@ -65,20 +72,23 @@ namespace ChessAI.Model.util.Pieces
                         {
 
                             //check if path is blocked by ally piece 
-                            if (board[row + direction.Item1 * i, col + direction.Item2 * i][0] == fellow)
+                            if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(fellow))
                             {
                                 break;
                             }
-                            if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--" || board[row + direction.Item1 * i, col + direction.Item2 * i][0] == opponent)
+                            if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--" )
                             {
-                                possibleBishopMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board));
+                                possibleBishopMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board,this));
 
                                 // if capture occured, no move along the same path is valid
-                                if (board[row + direction.Item1 * i, col + direction.Item2 * i][0] == opponent)
-                                {
-                                    break;
-                                }
+                            
 
+                            }
+                            else if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(opponent))
+                            {
+                                Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i));
+                                possibleBishopMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this,target));
+                                break;
                             }
                         }
                         i++;

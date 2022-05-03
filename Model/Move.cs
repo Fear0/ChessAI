@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ChessAI.Model.util;
+using ChessAI.Model.util.Pieces;
 
 namespace ChessAI.Model
 {
@@ -8,8 +10,12 @@ namespace ChessAI.Model
 
     {
 
-        public Tuple<int, int> startPosition = Tuple.Create(0, 0); //(row,column)
-        public Tuple<int, int> endPosition = Tuple.Create(0, 0);
+        public Tuple<int, int> startPosition; //(row,column)
+        public Tuple<int, int> endPosition;
+
+        public Piece source;
+
+        public Piece target;
         public string pieceMoved { get; }
         public string pieceCaptured { get; }
 
@@ -19,34 +25,25 @@ namespace ChessAI.Model
 
         public bool is_castle_move = false;
 
-        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, bool isEnPassant = false, bool isCastle = false)
+        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, Piece source, Piece target = null, bool isEnPassant = false, bool isCastle = false)
         {
             startPosition = startPos;
             endPosition = endPos;
             pieceMoved = board[startPos.Item1, startPos.Item2];
             pieceCaptured = board[endPos.Item1, endPos.Item2];
+            this.source = source;
+            this.target = target;
             is_pawn_promotion = (pieceMoved == "wP" && endPosition.Item1 == 0) || (pieceMoved == "bP" && endPosition.Item1 == board.GetLength(0) - 1);
             is_enpassant_move = isEnPassant;
             is_castle_move = isCastle;
+
+            if (is_enpassant_move)
+            {
+                pieceCaptured = pieceMoved == "wP" ? "bP" : "wP";
+            }
         }
 
-
-        // bad method, it doesn't hold the info of the move
-        //public static Move? ToMove(string? input, GameState state)
-        //{
-
-        //    var rx = new Regex(@"[a-h][1-8][a-h][1-8]", RegexOptions.Compiled);
-        //    if (rx.IsMatch(input))
-        //    {
-        //        Tuple<int, int> startPos = Tuple.Create(ChessNotation.ranksToRows[input[1].ToString()], ChessNotation.filesToCols[input[0].ToString()]);
-        //        Tuple<int, int> endPos = Tuple.Create(ChessNotation.ranksToRows[input[3].ToString()], ChessNotation.filesToCols[input[2].ToString()]);
-
-
-        //        return new Move(startPos, endPos, state.board);
-        //    }
-        //    return null;
-        //}
-
+   
         public override string ToString()
         {
             if (is_castle_move) // O-O for short castle (ks) and O-O-O for long casle (qs)
@@ -74,5 +71,6 @@ namespace ChessAI.Model
             }
             return false;
         }
+
     }
 }

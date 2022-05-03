@@ -13,12 +13,13 @@ namespace ChessAI.Model.util
         Rook,
         Knight,
         Bishop,
-        Pawn
+        Pawn,
+        Empty
     }
 
     public enum PieceColor
     {
-        Black,
-        White
+        Black = -1,
+        White = 1
     }
 }

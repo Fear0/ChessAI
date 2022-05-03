@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessAI.Model.util
 {
-    internal class CastleRights
+    public class CastleRights
     {
         public bool wKs { get; set; }
         public bool wQs { get; set; }

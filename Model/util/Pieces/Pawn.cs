@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 
 namespace ChessAI.Model.util.Pieces
 {
-    internal class Pawn : Piece
+    public class Pawn : Piece
     {
 
+  
         public Pawn(int row, int col, PieceColor color) : base(row, col, color)
         {
             pieceType = PieceType.Pawn;
+            score = 1;
         }
+
+        //public void InitializePawn(int row, int col, PieceColor color)
+        //{
+        //    base.Initialize(row, col, color);
+        //    pieceType = PieceType.Pawn;
+        //    score = 1;
+        //}
 
         public override List<Move> GetPossibleMoves(GameState gamestate)
         {
@@ -42,7 +51,8 @@ namespace ChessAI.Model.util.Pieces
             //white pawn move
             if (gamestate.whiteToPlay && this.pieceColor == PieceColor.White)
             {
-
+                //Console.WriteLine(this);
+                //Console.WriteLine(gamestate);
                 if (board[row - 1, col] == "--")
                 {
 
@@ -50,13 +60,13 @@ namespace ChessAI.Model.util.Pieces
 
                     {
                         //move 1 square forward
-                        possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col), board));
+                        possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col), board, this));
                         //if (row == 5 && col == 4) Console.WriteLine(string.Join(",", possiblePawnMoves));
 
                         //move 2 squares forward
                         if (row == 6 && board[row - 2, col] == "--")
                         {
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 2, col), board));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 2, col), board, this));
                         }
                     }
                 }
@@ -66,14 +76,18 @@ namespace ChessAI.Model.util.Pieces
                 {
                     if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
                     {
+
                         if (board[row - 1, col - 1][0].Equals('b'))
                         {
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row - 1, col - 1));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board, this, target));
+                            //Console.WriteLine("pawn move here 1: " + new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board, this, target));
                         }
-                        if (Tuple.Create(row - 1, col - 1).Equals(gamestate.enPassantPossible))
+                        if (Tuple.Create(row - 1, col - 1).Equals(gamestate.enPassantPossible) && board[row, col - 1][0].Equals('b'))
                         {
-
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board, true));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row, col - 1));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board, this, target, isEnPassant: true));
+                            //Console.WriteLine("pawn move here 2: " + new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col - 1), board, this, target, isEnPassant: true));
 
                         }
                     }
@@ -82,16 +96,18 @@ namespace ChessAI.Model.util.Pieces
                 //capture right
                 if (col < 7)
                 {
-                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
+                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, 1)))
                     {
                         if (board[row - 1, col + 1][0].Equals('b'))
                         {
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row - 1, col + 1));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board, this, target));
                         }
-                        if (Tuple.Create(row - 1, col + 1).Equals(gamestate.enPassantPossible))
+                        if (Tuple.Create(row - 1, col + 1).Equals(gamestate.enPassantPossible) && board[row, col + 1][0].Equals('b'))
                         {
                             //Console.WriteLine("hani houni felabyedh");
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board, true));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row, col + 1));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row - 1, col + 1), board, this, target, isEnPassant: true));
 
                         }
                     }
@@ -99,17 +115,17 @@ namespace ChessAI.Model.util.Pieces
             }
 
             //black pawn move
-            if (!gamestate.whiteToPlay && this.pieceColor == PieceColor.Black)
+            else if (!gamestate.whiteToPlay && this.pieceColor == PieceColor.Black)
             {
 
                 if (board[row + 1, col] == "--")
                 {
                     if (!piecePinned || pinDirection.Equals(Tuple.Create(1, 0)))
                     {
-                        possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col), board));
+                        possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col), board, this));
                         if (row == 1 && board[row + 2, col] == "--")
                         {
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 2, col), board));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 2, col), board, this));
                         }
                     }
                 }
@@ -121,12 +137,14 @@ namespace ChessAI.Model.util.Pieces
                     {
                         if (board[row + 1, col - 1][0].Equals('w'))
                         {
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + 1, col - 1));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board, this, target));
                         }
-                        if (Tuple.Create(row + 1, col - 1).Equals(gamestate.enPassantPossible))
+                        if (Tuple.Create(row + 1, col - 1).Equals(gamestate.enPassantPossible) && board[row, col -1][0].Equals('w'))
                         {
 
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board, true));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row, col - 1));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col - 1), board, this, target, isEnPassant: true));
 
                         }
                     }
@@ -135,16 +153,18 @@ namespace ChessAI.Model.util.Pieces
                 //capture right
                 if (col < 7)
                 {
-                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, -1)))
+                    if (!piecePinned || pinDirection.Equals(Tuple.Create(-1, 1)))
                     {
                         if (board[row + 1, col + 1][0].Equals('w'))
                         {
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + 1, col + 1));
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board, this, target));
                         }
-                        if (Tuple.Create(row + 1, col + 1).Equals(gamestate.enPassantPossible))
+                        if (Tuple.Create(row + 1, col + 1).Equals(gamestate.enPassantPossible) && board[row, col + 1][0].Equals('w'))
                         {
                             //Console.WriteLine("hani houni felak7el");
-                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board, true));
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row, col + 1) );
+                            possiblePawnMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + 1, col + 1), board, this, target, isEnPassant: true));
 
                         }
                     }
@@ -152,6 +172,7 @@ namespace ChessAI.Model.util.Pieces
 
 
             }
+            //Console.WriteLine("Pawn Move: " + String.Join(",", possiblePawnMoves));
             return possiblePawnMoves;
         }
     }

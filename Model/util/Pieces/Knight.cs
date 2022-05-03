@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 
 namespace ChessAI.Model.util.Pieces
 {
-    class Knight : Piece
+    public class Knight : Piece
     {
+
 
         public Knight(int row, int col, PieceColor color) : base(row, col, color)
         {
             pieceType = PieceType.Knight;
+            score = 3;
         }
+
+        //public void InitializeKnight(int row, int col, PieceColor color)
+        //{
+        //    base.Initialize(row, col, color);
+        //    pieceType = PieceType.Knight;
+        //    score = 3;
+        //}
 
         public override List<Move> GetPossibleMoves(GameState gamestate)
         {
@@ -48,9 +57,15 @@ namespace ChessAI.Model.util.Pieces
                 {
                     if (!piecePinned)
                     {
-                        if (board[row + direction.Item1, col + direction.Item2] == "--" || board[row + direction.Item1, col + direction.Item2][0] == opponent)
+                        if (board[row + direction.Item1, col + direction.Item2] == "--")
                         {
-                            possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1, col + direction.Item2), board));
+                            possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1, col + direction.Item2), board,this));
+                        }
+                        if (board[row + direction.Item1, col + direction.Item2][0].Equals(opponent))
+                        {
+                            Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + direction.Item1, col + direction.Item2));
+                            possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1, col + direction.Item2), board, this,target));
+
                         }
                     }
                 }

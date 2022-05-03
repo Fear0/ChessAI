@@ -6,13 +6,21 @@ using System.Threading.Tasks;
 
 namespace ChessAI.Model.util.Pieces
 {
-    internal class King : Piece
+    public class King : Piece
     {
 
+      
         public King(int row, int col, PieceColor color) : base(row, col, color)
         {
             pieceType = PieceType.King;
         }
+
+        //public void InitializeKing(int row, int col, PieceColor color)
+        //{
+        //    base.Initialize(row, col, color);
+        //    pieceType = PieceType.King;
+
+        //}
 
         public override List<Move> GetPossibleMoves(GameState gamestate)
         {
@@ -42,7 +50,7 @@ namespace ChessAI.Model.util.Pieces
 
                 if (0 <= endRow && endRow <= limit && 0 <= endCol && endCol <= limit)
                 {
-                    if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--" || board[row + direction.Item1 * i, col + direction.Item2 * i][0] == opponent)
+                    if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--" || board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(opponent))
                     {
                         // we put the king in one of the possible squares
                         if (fellow == 'w')
@@ -58,9 +66,17 @@ namespace ChessAI.Model.util.Pieces
 
                         if (!checkAndPinLog.Item1) // if putting the king on one of the possible squares doesnt lead to a check, then we have a valid king move
                         {
-                            possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board));
+                            if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(opponent))
+                            {
+                                Piece target = gamestate.GetPieceAtLocation(Tuple.Create(endRow, endCol));
+                                possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board, this,target));
+                            } else
+                            {
+                                possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board, this));
+                            }
                         }
 
+                        // reinstate original location
                         if (fellow == 'w')
                         {
                             gamestate.whiteKingLocation = Tuple.Create(row, col);

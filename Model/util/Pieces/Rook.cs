@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 
 namespace ChessAI.Model.util.Pieces
 {
-    internal class Rook : Piece
+    public class Rook : Piece
     {
 
+    
         public Rook(int row, int col, PieceColor color) : base(row, col, color)
         {
             pieceType = PieceType.Rook;
+            score = 5;
         }
+
+        //public void InitializeRook(int row, int col, PieceColor color)
+        //{
+        //    base.Initialize(row, col, color);
+        //    pieceType = PieceType.Rook;
+        //    score = 5;
+        //}
 
         public override List<Move> GetPossibleMoves(GameState gamestate)
         {
@@ -68,20 +77,23 @@ namespace ChessAI.Model.util.Pieces
                         if (!piecePinned || direction.Equals(pinDirection) || direction.Equals(Tuple.Create(-pinDirection.Item1,-pinDirection.Item2))) { 
 
                             //check if path is blocked by ally piece 
-                            if (board[row + direction.Item1 * i, col + direction.Item2 * i][0] == fellow)
+                            if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(fellow))
                             {
                                 break;
                             }
-                            if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--" || board[row + direction.Item1 * i, col + direction.Item2 * i][0] == opponent)
+                            if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--")
                             {
-                                possibleRookMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board));
+                                possibleRookMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this));
 
                                 // if capture occured, no move along the same path is valid
-                                if (board[row + direction.Item1 * i, col + direction.Item2 * i][0] == opponent)
-                                {
-                                    break;
-                                }
 
+
+                            }
+                            else if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(opponent))
+                            {
+                                Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i));
+                                possibleRookMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this, target));
+                                break;
                             }
                         }
                         i++;
