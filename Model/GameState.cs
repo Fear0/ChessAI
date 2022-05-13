@@ -36,7 +36,7 @@ namespace ChessAI.Model
 
         public Tuple<int, int> blackKingLocation = Tuple.Create(0, 4);
 
-
+        public int ids = 0; //indexer for the pieces
         public bool checkmate = false;
 
         public bool stalemate = false;
@@ -56,7 +56,7 @@ namespace ChessAI.Model
         public List<CastleRights> castle_rights_log = new();
 
 
-        
+
         public GameState()
         {
 
@@ -66,58 +66,58 @@ namespace ChessAI.Model
             //var moves = pawn.GetPossibleMoves(this);
             this.whiteToPlay = true;
 
-
+            //int ids = 0;
             //pawns
             for (int i = 0; i < board.GetLength(0); i++)
             {
-          
-                pieces.Add(new Pawn(6,i,PieceColor.White));
+
+                pieces.Add(new Pawn(6, i, PieceColor.White, ids++));
             }
             for (int i = 0; i < board.GetLength(0); i++)
             {
-                pieces.Add(new Pawn(1,i,PieceColor.Black));
+                pieces.Add(new Pawn(1, i, PieceColor.Black, ids++));
             }
 
             //knights
 
-            pieces.Add(new Knight(7, 1, PieceColor.White));
+            pieces.Add(new Knight(7, 1, PieceColor.White, ids++));
 
-            pieces.Add(new Knight(7, 6, PieceColor.White));
+            pieces.Add(new Knight(7, 6, PieceColor.White, ids++));
 
-            pieces.Add(new Knight(0, 1, PieceColor.Black));
+            pieces.Add(new Knight(0, 1, PieceColor.Black, ids++));
 
-            pieces.Add(new Knight(0, 6, PieceColor.Black));
+            pieces.Add(new Knight(0, 6, PieceColor.Black, ids++));
 
             //bishops
 
 
 
-            pieces.Add(new Bishop(7, 2, PieceColor.White));
-            pieces.Add(new Bishop(7, 5, PieceColor.White));
-            pieces.Add(new Bishop(0, 2, PieceColor.Black));
-            pieces.Add(new Bishop(0, 5, PieceColor.Black));
+            pieces.Add(new Bishop(7, 2, PieceColor.White, ids++));
+            pieces.Add(new Bishop(7, 5, PieceColor.White, ids++));
+            pieces.Add(new Bishop(0, 2, PieceColor.Black, ids++));
+            pieces.Add(new Bishop(0, 5, PieceColor.Black, ids++));
 
             //rooks
 
 
 
-            pieces.Add(new Rook(7, 0, PieceColor.White));
-            pieces.Add(new Rook(7, 7, PieceColor.White));
-            pieces.Add(new Rook(0, 0, PieceColor.Black));
-            pieces.Add(new Rook(0, 7, PieceColor.Black));
+            pieces.Add(new Rook(7, 0, PieceColor.White, ids++));
+            pieces.Add(new Rook(7, 7, PieceColor.White, ids++));
+            pieces.Add(new Rook(0, 0, PieceColor.Black, ids++));
+            pieces.Add(new Rook(0, 7, PieceColor.Black, ids++));
 
             //queens
 
 
-            pieces.Add(new Queen(7, 3, PieceColor.White));
-            pieces.Add(new Queen(0, 3, PieceColor.Black));
+            pieces.Add(new Queen(7, 3, PieceColor.White, ids++));
+            pieces.Add(new Queen(0, 3, PieceColor.Black, ids++));
 
             //kings
 
 
 
-            pieces.Add(new King(7, 4, PieceColor.White));
-            pieces.Add(new King(0, 4, PieceColor.Black));
+            pieces.Add(new King(7, 4, PieceColor.White, ids++));
+            pieces.Add(new King(0, 4, PieceColor.Black, ids++));
 
         }
 
@@ -135,17 +135,14 @@ namespace ChessAI.Model
             List<Move> moves = new List<Move>();
 
             var turn = this.whiteToPlay ? PieceColor.White : PieceColor.Black;
-            //Console.WriteLine("Pieces begin:");
-            //Console.WriteLine(string.Join("\n", pieces));
-            //Console.WriteLine("Pieces end");
             foreach (var piece in pieces)
             {
                 if (piece.status == "alive" && piece.pieceColor == turn)
                 {
- 
-                        moves.AddRange(piece.GetPossibleMoves(this));
 
-                    
+                    moves.AddRange(piece.GetPossibleMoves(this));
+
+
                 }
             }
             return moves;
@@ -164,11 +161,6 @@ namespace ChessAI.Model
             this.in_check = checkInfo.Item1;
             this.pins = checkInfo.Item2;
             this.checks = checkInfo.Item3;
-
-            //Console.Write("Pins: ");
-            //Console.WriteLine(String.Join(", ", this.pins)); // log pins
-            //Console.Write("Checks: ");
-            //Console.WriteLine(String.Join(", ", this.checks)); // log checks;
 
             int limit = board.GetLength(0) - 1;
 
@@ -477,7 +469,7 @@ namespace ChessAI.Model
                     if (!IsSquareUnderAttack(Tuple.Create(kingRow, kingCol + 1)) && !IsSquareUnderAttack(Tuple.Create(kingRow, kingCol + 2)))
                     {
 
-                        kingsidecastlemoves.Add(new Move(location, Tuple.Create(kingRow, kingCol + 2), board, king, isCastle: true));
+                        kingsidecastlemoves.Add(new Move(location, Tuple.Create(kingRow, kingCol + 2), board, king.id, isCastle: true));
 
                     }
                 }
@@ -500,7 +492,7 @@ namespace ChessAI.Model
                     if (!IsSquareUnderAttack(Tuple.Create(kingRow, kingCol - 1)) && !IsSquareUnderAttack(Tuple.Create(kingRow, kingCol - 2)))
                     {
 
-                        queensidecastlemoves.Add(new Move(location, Tuple.Create(kingRow, kingCol - 2), board, king, isCastle: true));
+                        queensidecastlemoves.Add(new Move(location, Tuple.Create(kingRow, kingCol - 2), board, king.id, isCastle: true));
 
                     }
                 }
@@ -579,125 +571,24 @@ namespace ChessAI.Model
 
         }
 
-
-        public GameState DeepCopy()
-        {
-            //GameState copy = new GameState();
-            GameState copy = (GameState) this.MemberwiseClone();
-            //copy.whiteToPlay = this.whiteToPlay;
-            copy.board = (string[,])this.board.Clone();
-            copy.pieces = new List<Piece>();
-            foreach (var piece in this.pieces)
-            {
-                switch (piece.pieceType)
-                {
-                    case PieceType.King:
-                        var king = new King(piece.location.Item1, piece.location.Item2,piece.pieceColor);
-                        king.status = piece.status;
-                        copy.pieces.Add(king);
-                        break;
-                    case PieceType.Queen:
-                        var queen = new Queen(piece.location.Item1, piece.location.Item2, piece.pieceColor);
-                        queen.status = piece.status;
-                        copy.pieces.Add(queen);
-                        break;
-                    case PieceType.Rook:
-                        var rook = new Rook(piece.location.Item1, piece.location.Item2, piece.pieceColor);
-                        rook.status = piece.status;
-                        copy.pieces.Add(rook);
-                        break;
-                    case PieceType.Bishop:
-                        var bishop = new Bishop(piece.location.Item1, piece.location.Item2, piece.pieceColor);
-                        bishop.status = piece.status;
-                        copy.pieces.Add(bishop);
-                        break;
-                    case PieceType.Knight:
-                        var knight = new Knight(piece.location.Item1, piece.location.Item2, piece.pieceColor);
-                        knight.status = piece.status;
-                        copy.pieces.Add(knight);
-                        break;
-                    case PieceType.Pawn:
-                        var pawn = new Pawn(piece.location.Item1, piece.location.Item2, piece.pieceColor);
-                        pawn.status = piece.status;
-                        copy.pieces.Add(pawn);
-                        break;
-                }
-            }
-
-
-
-            copy.whiteKingLocation = Tuple.Create(this.whiteKingLocation.Item1, this.whiteKingLocation.Item2);
-            copy.blackKingLocation = Tuple.Create(this.blackKingLocation.Item1, this.blackKingLocation.Item2);
-            copy.checkmate = this.checkmate;
-            //copy.stalemate = this.stalemate;
-            copy.checks = new List<Tuple<int, int, int, int>>();
-            this.checks.ForEach(check => copy.checks.Add(Tuple.Create(check.Item1,check.Item2,check.Item3,check.Item4)));
-            copy.pins = new List<Tuple<int, int, int, int>>();
-            this.pins.ForEach(pin => copy.pins.Add(Tuple.Create(pin.Item1, pin.Item2, pin.Item3, pin.Item4)));
-            copy.currentCastleRights = new CastleRights(currentCastleRights.wKs, currentCastleRights.wQs,currentCastleRights.bKs, currentCastleRights.bQs);
-            //copy.moveHisory = new List<Move>();
-
-            //moveHisory.ForEach(move => copy.moveHisory.Add(move));
-            //copy.in_check = this.in_check;
-            copy.enPassantPossible = Tuple.Create(this.enPassantPossible.Item1, this.enPassantPossible.Item2);
-
-            return copy;
-
-        }
-
-        // to be used later on for AI 
-        public GameState GenerateSuccessorState(Move move)
-        {
-            // we generate the successor state by copying the current state and applying the move it
-            GameState state = DeepCopy();
-            state.MakeMove(move);
-            return state;
-        }
-
-
         public void MakeMove(Move move)
         {
-          
+
             if (move != null)
             {
                 this.moveHisory.Add(move);
-                Piece movedPiece = move.source;
-                //Console.WriteLine(movedPiece.pieceType);
-
-                foreach (var piece in pieces)
+                int movedPieceId = move.sourcePieceId;
+                int capturedPieceId = move.targetPieceId;
+                if (capturedPieceId != -1)
                 {
-                    if (piece.location.Item1 == movedPiece.location.Item1 && piece.location.Item2 == movedPiece.location.Item2 && piece.pieceType == movedPiece.pieceType && piece.status == "alive")
-                    {
-
-                        //movedPiece.location = move.endPosition;
-                        //this.pieces.Remove(piece);
-                        //this.pieces.Add(movedPiece);
-                        piece.location = move.endPosition;
-
-                        break;
-                    }
-                }
-                movedPiece.location = move.endPosition;
-               // Console.WriteLine(movedPiece.location);
-                Piece capturedPiece = move.target;
-
-               
-
-
-                if (capturedPiece != null && capturedPiece.pieceType!= PieceType.King && capturedPiece.location != this.whiteKingLocation && capturedPiece.location!= this.blackKingLocation)
-                {
+                    var capturedPiece = GetPieceById(capturedPieceId);
                     capturedPiece.status = "captured";
                 }
 
+                var movedPiece = GetPieceById(movedPieceId);
+                movedPiece.location = move.endPosition;
                 if (movedPiece != null)
                 {
-   
-
-                    if (move.is_enpassant_move)
-                    {
-                        //this.board[move.startPosition.Item1, move.endPosition.Item2] = "--";
-
-                    }
 
                     // if opponent pawn moves 2 squares forward, then en passant capture is possible
                     if (movedPiece.pieceType == PieceType.Pawn && Math.Abs(move.startPosition.Item1 - move.endPosition.Item1) == 2)
@@ -725,281 +616,89 @@ namespace ChessAI.Model
                             rook.location = Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 + 1);
                         }
                     }
-                    //movedPiece.location = move.endPosition;
                     if (movedPiece.pieceType == PieceType.King)
                     {
                         if (whiteToPlay && movedPiece.pieceColor == PieceColor.White)
                         {
-                            this.whiteKingLocation = movedPiece.location;
+                            this.whiteKingLocation = move.endPosition;
                         }
                         if (!whiteToPlay && movedPiece.pieceColor == PieceColor.Black)
                         {
-                            this.blackKingLocation = movedPiece.location;
+                            this.blackKingLocation = move.endPosition;
                         }
                     }
                     if (move.is_pawn_promotion)
                     {
+                        movedPiece.status = "captured";
                         var color = movedPiece.pieceColor;
                         if (color == PieceColor.White && this.whiteToPlay)
                         {
-                            //this.board[move.endPosition.Item1, move.endPosition.Item2] = "wQ";
-                            //this.pieces.Remove(movedPiece);
-                            movedPiece.status = "captured";
-                            this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.White));
-                            //var queen = GetPieceAtLocation(Tuple.Create(move.endPosition.Item1, move.endPosition.Item2));
-                            //queen.status = "alive";
+                            this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.White, ids++));
                         }
                         else if (color == PieceColor.Black && !this.whiteToPlay)
                         {
-                            //this.board[move.endPosition.Item1, move.endPosition.Item2] = "bQ";
-                            //this.pieces.Remove(movedPiece);
-                            movedPiece.status = "captured";
-                            this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.Black));
-                            //var queen = GetPieceAtLocation(Tuple.Create(move.endPosition.Item1, move.endPosition.Item2));
-                            //queen.status = "alive";
-
+                            this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.Black, ids++));
                         }
                     }
                 }
+
                 this.UpdateCastleRights(move);
 
-
-                // to do
-
                 this.enpassant_possible_log.Add(enPassantPossible);
-
                 this.castle_rights_log.Add(new CastleRights(this.currentCastleRights.wKs, this.currentCastleRights.wQs, this.currentCastleRights.bKs, this.currentCastleRights.bQs));
                 this.whiteToPlay = !whiteToPlay; //switch turns
                 this.board = Helpers.MapPiecesToBoard(this.pieces);
 
-               
+
             }
         }
 
 
-        //public void MakeMove(Move move)
-        //{
-
-        //    //Console.WriteLine(move.is_enpassant_move);
-
-        //    //assume that all moves are valid. Validation will be encapsuled somewhere else
-        //    if (move != null)
-        //    {
-        //        this.board[move.startPosition.Item1, move.startPosition.Item2] = "--";
-        //        this.board[move.endPosition.Item1, move.endPosition.Item2] = move.pieceMoved;
-        //        PieceType movedPieceType = GetPieceTypeFromString(move.pieceMoved);
-        //        PieceType capturedPieceType = GetPieceTypeFromString(move.pieceCaptured);
-        //        this.moveHisory.Add(move);
-        //        //var movedPiece = this.GetPieceAtLocation(move.startPosition,"alive",movedPieceType);
-
-        //        var movedPiece = pieces.Where(piece => piece.location.Equals(move.startPosition) && piece.status.Equals("alive") && piece.pieceType == movedPieceType).FirstOrDefault();
-        //        Piece? capturedPiece;
-
-        //        if (move.is_enpassant_move)
-        //        {
-        //            //Console.WriteLine("en passabt rahi");
-        //            capturedPiece = this.GetPieceAtLocation(Tuple.Create(move.startPosition.Item1, move.endPosition.Item2), "alive", PieceType.Pawn);
-        //            if (capturedPiece != null)
-        //            {
-        //                capturedPiece.status = "captured";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (capturedPieceType != PieceType.Empty)
-        //            {
-        //                //Console.WriteLine("captured piece type: " + capturedPieceType);
-        //                capturedPiece = this.GetPieceAtLocation(move.endPosition, "alive", capturedPieceType);
-        //                if (capturedPiece != null)
-        //                {
-        //                    capturedPiece.location = move.endPosition;
-        //                    capturedPiece.status = "captured";
-
-        //                }
-        //            }
-        //        }
-
-        //        if (movedPiece != null) // IsMove( return move!=null)
-        //        {
-
-        //            //pawn promotion to a queen
-        //            if (move.is_pawn_promotion)
-        //            {
-        //                var color = movedPiece.pieceColor;
-        //                if (color == PieceColor.White)
-        //                {
-        //                    this.board[move.endPosition.Item1, move.endPosition.Item2] = "wQ";
-        //                    this.pieces.Remove(movedPiece);
-        //                    this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.White));
-
-        //                }
-        //                else
-        //                {
-        //                    this.board[move.endPosition.Item1, move.endPosition.Item2] = "bQ";
-        //                    this.pieces.Remove(movedPiece);
-        //                    this.pieces.Add(new Queen(move.endPosition.Item1, move.endPosition.Item2, PieceColor.Black));
-        //                }
-
-        //            }
-
-        //            // en passant move captures the pawn that advanced 2 squares.
-        //            if (move.is_enpassant_move)
-        //            {
-        //                this.board[move.startPosition.Item1, move.endPosition.Item2] = "--";
-
-        //            }
-
-        //            // if opponent pawn moves 2 squares forward, then en passant capture is possible
-        //            if (movedPiece.pieceType == PieceType.Pawn && Math.Abs(move.startPosition.Item1 - move.endPosition.Item1) == 2)
-        //            {
-        //                this.enPassantPossible = Tuple.Create((move.endPosition.Item1 + move.startPosition.Item1) / 2, move.startPosition.Item2);
-        //            }
-        //            else //en passant is only valid for the turn in which the pawn was advanced.
-        //            {
-        //                this.enPassantPossible = Tuple.Create(-1, -1);
-
-        //            }
-
-        //            if (move.is_castle_move)
-        //            {
-        //                if (move.endPosition.Item2 - move.startPosition.Item2 == 2) // a king side castle took place
-        //                {
-        //                    this.board[move.endPosition.Item1, move.endPosition.Item2 - 1] = this.board[move.endPosition.Item1, move.endPosition.Item2 + 1]; //putting the rook on its new square
-        //                    this.board[move.endPosition.Item1, move.endPosition.Item2 + 1] = "--";
-        //                    var rook = GetPieceAtLocation(Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 + 1));
-        //                    rook.location = Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 - 1);
-
-        //                }
-        //                else // a queen side caste took place
-        //                {
-        //                    this.board[move.endPosition.Item1, move.endPosition.Item2 + 1] = this.board[move.endPosition.Item1, move.endPosition.Item2 - 2];
-        //                    this.board[move.endPosition.Item1, move.endPosition.Item2 - 2] = "--";
-        //                    var rook = GetPieceAtLocation(Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 - 2));
-        //                    rook.location = Tuple.Create(move.endPosition.Item1, move.endPosition.Item2 + 1);
-        //                }
-        //            }
-
-        //            movedPiece.location = move.endPosition;
-        //            if (movedPiece.pieceType == PieceType.King)
-        //            {
-        //                if (whiteToPlay && movedPiece.pieceColor == PieceColor.White)
-        //                {
-        //                    this.whiteKingLocation = movedPiece.location;
-        //                }
-        //                if (!whiteToPlay && movedPiece.pieceColor == PieceColor.Black)
-        //                {
-        //                    this.blackKingLocation = movedPiece.location;
-        //                }
-        //            }
-
-        //        }
-        //        //if (capturedPiece != null)
-        //        //{
-        //        //    capturedPiece.location = move.endPosition;
-        //        //    capturedPiece.status = "captured";
-
-        //        //}
-
-        //        this.UpdateCastleRights(move);
-        //        //this.whiteToPlay = !whiteToPlay; //switch turns
-
-        //        // to do
-
-        //        this.enpassant_possible_log.Add(enPassantPossible);
-
-        //        this.castle_rights_log.Add(new CastleRights(this.currentCastleRights.wKs, this.currentCastleRights.wQs, this.currentCastleRights.bKs, this.currentCastleRights.bQs));
-        //        this.whiteToPlay = !whiteToPlay;
-        //    }
-
-        //}
-
-
         public void Undo()
         {
-            //var state = statesLog.ElementAt(statesLog.Count - 1);
-            //this.statesLog.Remove(state);
 
-            //this.pieces = state.pieces;
-            //this.board = state.board;
-            //this.whiteToPlay = state.whiteToPlay;
-            //this.whiteKingLocation = state.whiteKingLocation;
-            //this.blackKingLocation = state.blackKingLocation;
-            //this.checkmate = state.checkmate;
-            //this.stalemate = state.stalemate;
-            //this.checks = state.checks;
-            //this.pins = state.pins;
-            //this.in_check = state.in_check;
-            //this.castle_rights_log = state.castle_rights_log;
-            //this.currentCastleRights = state.currentCastleRights;
-            //this.enPassantPossible = state.enPassantPossible;
-            //this.enpassant_possible_log = state.enpassant_possible_log;
-            //this.moveHisory = state.moveHisory;
-            //this.statesLog = state.statesLog;
-
-
-           if (moveHisory.Any())
+            if (moveHisory.Any())
             {
+                this.whiteToPlay = !this.whiteToPlay;
                 var lastMove = moveHisory.Last();
-                moveHisory.RemoveAt(moveHisory.Count-1);
+                moveHisory.RemoveAt(moveHisory.Count - 1);
                 var startPosition = lastMove.startPosition;
                 var endPosition = lastMove.endPosition;
-                //this.board[startPosition.Item1, startPosition.Item2] = lastMove.pieceMoved;
-                //this.board[endPosition.Item1, endPosition.Item2] = lastMove.pieceCaptured;
-                var movedPiece = lastMove.source;
-                var capturedPiece = lastMove.target;
-                if (capturedPiece != null)
+                var movedPieceId = lastMove.sourcePieceId;
+                var movedPiece = GetPieceById(movedPieceId);
+                var capturedPieceId = lastMove.targetPieceId;
+
+                Piece capturedPiece;
+                if (capturedPieceId != -1)
                 {
+                    capturedPiece = GetPieceById(capturedPieceId);
                     capturedPiece.status = "alive";
                 }
-                if (movedPiece != null)
+
+
+                movedPiece.location = startPosition;
+
+                if (movedPiece.pieceType == PieceType.King)
                 {
-                    //foreach (var piece in pieces)
-                    //{
-                    //    if (piece.location.Item1 == movedPiece.location.Item1 && piece.location.Item2 == movedPiece.location.Item2 && piece.pieceType == movedPiece.pieceType && piece.status == "alive")
-                    //    {
-
-                    //        movedPiece.location = lastMove.startPosition;
-                    //        this.pieces.Remove(piece);
-                    //        this.pieces.Add(movedPiece);
-                    //        //piece.location = move.endPosition;
-
-                    //        break;
-                    //    }
-                    //}
-                    movedPiece.location = startPosition;
-                    if (movedPiece.pieceType == PieceType.King)
+                    if (movedPiece.pieceColor == PieceColor.White)
                     {
-                        if (movedPiece.pieceColor == PieceColor.White)
-                        {
-                            this.whiteKingLocation = startPosition;
-                        }
-                        else
-                        {
-                            this.blackKingLocation = startPosition;
-                        }
+                        this.whiteKingLocation = startPosition;
                     }
-
-
-                    if (lastMove.is_pawn_promotion)
+                    else
                     {
-                            //todo
-                            var currentColor = this.whiteToPlay ? PieceColor.White : PieceColor.Black;
-                            this.pieces.Where(piece => piece.location == endPosition && piece.status == "alive" && piece.pieceType == PieceType.Queen && piece.pieceColor == currentColor).FirstOrDefault().status = "captured";
-                            movedPiece.status = "alive";
-                            //var queen = GetPieceAtLocation(endPosition,"alive",PieceType.Queen);
-                            //queen.status = "captured";
-                            //this.pieces.Remove(queen);
-                        
-                 }
+                        this.blackKingLocation = startPosition;
+                    }
                 }
-                if (lastMove.is_enpassant_move)
+
+
+                if (lastMove.is_pawn_promotion)
                 {
-                    //this.board[endPosition.Item1, endPosition.Item2] = "--";
-                    //this.board[startPosition.Item1, endPosition.Item2] = lastMove.pieceCaptured;
-                    //movedPiece.location = startPosition;  //
-                    //var capturedPawn = this.GetPieceAtLocation(Tuple.Create(startPosition.Item1, endPosition.Item2), "captured", PieceType.Pawn);
-                    // capturedPawn.status = "alive"; //
+                    movedPiece.status = "alive";
+                    var queen = GetPieceAtLocation(endPosition, "alive", PieceType.Queen, movedPiece.pieceColor);
+                    this.pieces.Remove(queen);
+
                 }
+
                 this.enpassant_possible_log.RemoveAt(enpassant_possible_log.Count - 1);
                 if (enpassant_possible_log.Any())
                 {
@@ -1021,15 +720,11 @@ namespace ChessAI.Model
                 {
                     if (lastMove.endPosition.Item2 - lastMove.startPosition.Item2 == 2)
                     {
-                        //this.board[endPosition.Item1, endPosition.Item2 + 1] = this.board[endPosition.Item1, endPosition.Item2 - 1];
-                        //this.board[endPosition.Item1, endPosition.Item2 - 1] = "--";
                         var rook = GetPieceAtLocation(Tuple.Create(endPosition.Item1, endPosition.Item2 - 1));
                         rook.location = Tuple.Create(endPosition.Item1, endPosition.Item2 + 1);
                     }
                     else
                     {
-                        //this.board[endPosition.Item1, endPosition.Item2 - 2] = this.board[endPosition.Item1, endPosition.Item2 + 1];
-                        //this.board[endPosition.Item1, endPosition.Item2 + 1] = "--";
                         var rook = GetPieceAtLocation(Tuple.Create(endPosition.Item1, endPosition.Item2 + 1));
                         rook.location = Tuple.Create(endPosition.Item1, endPosition.Item2 - 2);
 
@@ -1039,108 +734,11 @@ namespace ChessAI.Model
                 checkmate = false;
                 stalemate = false;
                 this.board = Helpers.MapPiecesToBoard(pieces);
-                this.whiteToPlay = !this.whiteToPlay;
+                //this.whiteToPlay = !this.whiteToPlay;
             }
         }
 
 
-        //public void Undo()
-        //{
-        //    //undoes the last move
-        //    if (moveHisory.Any())
-        //    {
-        //        var lastMove = moveHisory.Last();
-        //        moveHisory.Remove(lastMove);
-        //        var startPosition = lastMove.startPosition;
-        //        var endPosition = lastMove.endPosition;
-        //        var movedPieceType = GetPieceTypeFromString(lastMove.pieceMoved);
-        //        var capturedPieceType = GetPieceTypeFromString(lastMove.pieceCaptured);
-        //        this.board[startPosition.Item1, startPosition.Item2] = lastMove.pieceMoved;
-        //        this.board[endPosition.Item1, endPosition.Item2] = lastMove.pieceCaptured;
-        //        this.whiteToPlay = !this.whiteToPlay;
-        //        //var movedPiece = this.GetPieceAtLocation(lastMove.endPosition, "alive",movedPieceType);
-        //        var movedPiece = pieces.Where(piece => piece.location.Equals(lastMove.endPosition) && piece.status.Equals("alive") && piece.pieceType == movedPieceType).FirstOrDefault();
-        //        //Console.WriteLine(movedPieceType);
-
-        //        //var capturedPiece = this.GetPieceAtLocation(lastMove.endPosition, "captured",PieceType.Empty);
-        //        if (capturedPieceType != PieceType.Empty)
-        //        {
-        //            var capturedPiece = this.GetPieceAtLocation(lastMove.endPosition, "captured", capturedPieceType);
-        //            if (capturedPiece != null)
-        //            {
-        //                capturedPiece.location = endPosition;
-        //                capturedPiece.status = "alive";
-        //            }
-        //        }
-
-        //        if (movedPiece != null)
-        //        {
-        //            movedPiece.location = startPosition;
-        //            if (movedPiece.pieceType == PieceType.King)
-        //            {
-        //                if (movedPiece.pieceColor == PieceColor.White)
-        //                {
-        //                    this.whiteKingLocation = startPosition;
-        //                }
-        //                else
-        //                {
-        //                    this.blackKingLocation = startPosition;
-        //                }
-        //            }
-        //        }
-        //        if (lastMove.is_enpassant_move)
-        //        {
-        //            this.board[endPosition.Item1, endPosition.Item2] = "--";
-        //            this.board[startPosition.Item1, endPosition.Item2] = lastMove.pieceCaptured;
-        //            //movedPiece.location = startPosition;  //
-        //            var capturedPawn = this.GetPieceAtLocation(Tuple.Create(startPosition.Item1, endPosition.Item2), "captured", PieceType.Pawn);
-        //            capturedPawn.status = "alive"; //
-        //        }
-
-        //        this.enpassant_possible_log.RemoveAt(enpassant_possible_log.Count - 1);
-        //        if (enpassant_possible_log.Any())
-        //        {
-        //            enPassantPossible = enpassant_possible_log[enpassant_possible_log.Count - 1];
-        //        }
-        //        else
-        //        {
-        //            enPassantPossible = Tuple.Create(-1, -1);
-        //        }
-
-
-        //        this.castle_rights_log.RemoveAt(castle_rights_log.Count - 1);
-
-        //        if (castle_rights_log.Any())
-        //        {
-        //            currentCastleRights = castle_rights_log[castle_rights_log.Count - 1];
-        //        }
-
-        //        if (lastMove.is_castle_move)
-        //        {
-        //            if (lastMove.endPosition.Item2 - lastMove.startPosition.Item2 == 2)
-        //            {
-        //                this.board[endPosition.Item1, endPosition.Item2 + 1] = this.board[endPosition.Item1, endPosition.Item2 - 1];
-        //                this.board[endPosition.Item1, endPosition.Item2 - 1] = "--";
-        //                var rook = GetPieceAtLocation(Tuple.Create(endPosition.Item1, endPosition.Item2 - 1));
-        //                rook.location = Tuple.Create(endPosition.Item1, endPosition.Item2 + 1);
-        //            }
-        //            else
-        //            {
-        //                this.board[endPosition.Item1, endPosition.Item2 - 2] = this.board[endPosition.Item1, endPosition.Item2 + 1];
-        //                this.board[endPosition.Item1, endPosition.Item2 + 1] = "--";
-        //                var rook = GetPieceAtLocation(Tuple.Create(endPosition.Item1, endPosition.Item2 + 1));
-        //                rook.location = Tuple.Create(endPosition.Item1, endPosition.Item2 - 2);
-
-        //            }
-
-        //        }
-
-        //        checkmate = false;
-        //        stalemate = false;
-
-
-        //    }
-        //}
 
 
         public PieceType GetPieceTypeFromString(string piece)
@@ -1170,6 +768,21 @@ namespace ChessAI.Model
             }
         }
 
+        public Piece GetPieceAtLocation(Tuple<int, int> pieceLocation, string status, PieceType pieceType, PieceColor pieceColor)
+        {
+            foreach (var piece in pieces)
+            {
+
+                var location = piece.location;
+
+                if (location.Item1 == pieceLocation.Item1 && location.Item2 == pieceLocation.Item2 && piece.status == status && piece.pieceType == pieceType && piece.pieceColor == pieceColor)
+                {
+                    return piece;
+                }
+
+            }
+            return null;
+        }
         public Piece GetPieceAtLocation(Tuple<int, int> pieceLocation, string status, PieceType pieceType)
         {
             // fetch a specified piece at a particular position, helpful especially with captured pieces that share the same position
@@ -1183,6 +796,19 @@ namespace ChessAI.Model
                     return piece;
                 }
 
+            }
+            return null;
+        }
+
+        public Piece GetPieceById(int id)
+        {
+            foreach (var piece in pieces)
+            {
+                if (piece.id == id)
+                {
+                    return piece;
+
+                }
             }
             return null;
         }
@@ -1261,7 +887,7 @@ namespace ChessAI.Model
             }
             return sb.ToString();
         }
-        
+
         public void LogMoveHistory()
         {
             var sb = new StringBuilder();

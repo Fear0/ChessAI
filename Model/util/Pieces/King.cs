@@ -10,7 +10,7 @@ namespace ChessAI.Model.util.Pieces
     {
 
       
-        public King(int row, int col, PieceColor color) : base(row, col, color)
+        public King(int row, int col, PieceColor color, int id) : base(row, col, color,id)
         {
             pieceType = PieceType.King;
         }
@@ -69,10 +69,10 @@ namespace ChessAI.Model.util.Pieces
                             if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(opponent))
                             {
                                 Piece target = gamestate.GetPieceAtLocation(Tuple.Create(endRow, endCol));
-                                possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board, this,target));
+                                possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board, this.id, target.id));
                             } else
                             {
-                                possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board, this));
+                                possibleKingMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(endRow, endCol), board, this.id));
                             }
                         }
 

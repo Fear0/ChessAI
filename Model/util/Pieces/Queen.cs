@@ -9,7 +9,7 @@ namespace ChessAI.Model.util.Pieces
     public class Queen : Piece
     {
    
-        public Queen(int row, int col, PieceColor color) : base(row, col, color)
+        public Queen(int row, int col, PieceColor color, int id) : base(row, col, color, id)
         {
             pieceType = PieceType.Queen;
             score = 9;
@@ -94,7 +94,7 @@ namespace ChessAI.Model.util.Pieces
                             }
                             if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--")
                             {
-                                possibleQueenMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this));
+                                possibleQueenMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this.id));
 
                                 // if capture occured, no move along the same path is valid
 
@@ -103,7 +103,7 @@ namespace ChessAI.Model.util.Pieces
                             else if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(opponent))
                             {
                                 Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i));
-                                possibleQueenMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this, target));
+                                possibleQueenMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this.id, target.id));
                                 break;
                             }
                         }

@@ -13,9 +13,9 @@ namespace ChessAI.Model
         public Tuple<int, int> startPosition; //(row,column)
         public Tuple<int, int> endPosition;
 
-        public Piece source;
+        public int sourcePieceId;
 
-        public Piece target;
+        public int targetPieceId;
         public string pieceMoved { get; }
         public string pieceCaptured { get; }
 
@@ -25,14 +25,14 @@ namespace ChessAI.Model
 
         public bool is_castle_move = false;
 
-        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, Piece source, Piece target = null, bool isEnPassant = false, bool isCastle = false)
+        public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, int source, int target = -1, bool isEnPassant = false, bool isCastle = false)
         {
             startPosition = startPos;
             endPosition = endPos;
             pieceMoved = board[startPos.Item1, startPos.Item2];
             pieceCaptured = board[endPos.Item1, endPos.Item2];
-            this.source = source;
-            this.target = target;
+            this.sourcePieceId = source;
+            this.targetPieceId = target;
             is_pawn_promotion = (pieceMoved == "wP" && endPosition.Item1 == 0) || (pieceMoved == "bP" && endPosition.Item1 == board.GetLength(0) - 1);
             is_enpassant_move = isEnPassant;
             is_castle_move = isCastle;

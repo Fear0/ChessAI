@@ -125,7 +125,7 @@ namespace ChessAI.Model.AI
                 gameState.MakeMove(move);
                 var value = minimax(gameState, !isMaximizingPlayer, DEPTH-1,turn);
                 gameState.Undo();
-                if (value <= bestValue)
+                if (value < bestValue)
                 {
                     bestValue = value;
                     bestMove = move;

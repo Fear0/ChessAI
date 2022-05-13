@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ChessAI.Model;
 using ChessAI.Model.AI;
@@ -18,9 +19,15 @@ namespace ChessAI
         public static void Main(string[] args)
         {
             // d2d4, d7d5, e2e4, d5e4, b1c3, g8f6, c1f4, g7g6, f4e5, f8g7, f1b5, b8c6, d4d5, a7a6, d5c6,
+            //RunVsSelf();
+            //return;
+            //EngineVsEngine(EvaluationFunctions.BoardEvaluationFunction, 3);
+            RunVsEngine("negamax",EvaluationFunctions.BoardEvaluationFunction, 4);
+            //RandomVsRandom();
+            return;
             GameState game = new GameState();
             Console.WriteLine(game.ToString());
-            NegaMaxAlphaBetaAgent agent = new NegaMaxAlphaBetaAgent(EvaluationFunctions.BoardEvaluationFunction, 5);
+            NegaMaxAlphaBetaAgent agent = new NegaMaxAlphaBetaAgent(EvaluationFunctions.BoardEvaluationFunction, 3);
             bool player_one = false; // if human is playing white, then this will be true, else false
             bool player_two = true; // if human is playing black, this will be true, else false
             while (true)
@@ -84,6 +91,7 @@ namespace ChessAI
                 {
                     var bestMove = agent.GetAction(game, game.whiteToPlay);
                     game.MakeMove(bestMove);
+                    //Console.WriteLine(string.Join("\n", game.pieces));
                     Console.WriteLine(game.ToString());
                     Console.WriteLine(bestMove);
                     game.LogMoveHistory();
@@ -277,7 +285,7 @@ namespace ChessAI
 
                 if (action != null)
                 {
-                    Console.WriteLine(action.startPosition + "," + action.endPosition + ", " + action.source + "," + action.target + " | " + action);
+                    Console.WriteLine(action.startPosition + "," + action.endPosition + ", " + action.sourcePieceId + "," + action.targetPieceId + " | " + action);
                     game.MakeMove(action);
                     Console.WriteLine(string.Join("\n", game.pieces));
                     //Console.WriteLine(game.ToString());
@@ -307,6 +315,7 @@ namespace ChessAI
                 //break;
 
                 isMaximizingPlayer = !isMaximizingPlayer;
+                Thread.Sleep(1000); 
             }
 
         }
@@ -331,13 +340,13 @@ namespace ChessAI
 
                 if (action != null)
                 {
-                    Console.WriteLine(action.startPosition + "," + action.endPosition + ", " + action.source + "," + action.target + " | " + action);
+                    Console.WriteLine(action.startPosition + "," + action.endPosition + ", " + action.sourcePieceId + "," + action.targetPieceId + " | " + action);
                     game.MakeMove(action);
-                    Console.WriteLine(string.Join("\n", game.pieces));
-                    Console.WriteLine("Before Comparison:");
-                    Console.WriteLine(game.ToString());
+                    //Console.WriteLine(string.Join("\n", game.pieces));
+                    //Console.WriteLine("Before Comparison:");
+                    //Console.WriteLine(game.ToString());
                     Console.WriteLine(Helpers.BoardToString(Helpers.MapPiecesToBoard(game.pieces)));
-                    Console.WriteLine("After Comparison:");
+                    //Console.WriteLine("After Comparison:");
                 }
                 if (game.checkmate)
                 {
@@ -470,7 +479,7 @@ namespace ChessAI
             Console.WriteLine(game.ToString());
             bool humanPlayer = game.whiteToPlay;
             string? userInput;
-            bool whiteTurn = false;
+            bool whiteTurn = true;
             while (true)
             {
 
@@ -529,7 +538,7 @@ namespace ChessAI
                 }
                 else //engine move, here black
                 {
-                    var bestMove = agent.GetAction(game, true);
+                    var bestMove = agent.GetAction(game, false);
                     game.MakeMove(bestMove);
                     Console.WriteLine(game.ToString());
                     Console.WriteLine(bestMove);

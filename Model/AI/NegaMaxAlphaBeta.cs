@@ -33,11 +33,6 @@ namespace ChessAI.Model.AI
 
                 //var copy = gameState.DeepCopy();
                 gameState.MakeMove(move);
-                //var options = new JsonSerializerOptions
-                //{
-                //    UnknownTypeHandling = System.Text.Json.Serialization.JsonUnknownTypeHandling.
-                //}
-                //string? obj = JsonSerializer.Serialize<GameState>(gameState);
                 double score = -NegaMaxAlphaBeta(gameState, depth - 1, -beta, -alpha, -turn_multiplier);
                 //gameState = JsonSerializer.Deserialize<GameState>(obj);
                 gameState.Undo();

@@ -9,7 +9,7 @@ namespace ChessAI.Model.util.Pieces
     public class Bishop : Piece
     {
       
-        public Bishop(int row, int col, PieceColor color) : base(row, col, color)
+        public Bishop(int row, int col, PieceColor color, int id) : base(row, col, color,id)
         {
             pieceType = PieceType.Bishop;
             score = 30;
@@ -78,7 +78,7 @@ namespace ChessAI.Model.util.Pieces
                             }
                             if (board[row + direction.Item1 * i, col + direction.Item2 * i] == "--" )
                             {
-                                possibleBishopMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board,this));
+                                possibleBishopMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board,this.id));
 
                                 // if capture occured, no move along the same path is valid
                             
@@ -87,7 +87,7 @@ namespace ChessAI.Model.util.Pieces
                             else if (board[row + direction.Item1 * i, col + direction.Item2 * i][0].Equals(opponent))
                             {
                                 Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i));
-                                possibleBishopMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this,target));
+                                possibleBishopMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1 * i, col + direction.Item2 * i), board, this.id, target.id));
                                 break;
                             }
                         }

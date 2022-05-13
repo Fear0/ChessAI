@@ -13,17 +13,19 @@ namespace ChessAI.Model.util.Pieces
         public PieceType pieceType { get; set; }
         public PieceColor pieceColor { get; set; }
 
+        public int id { get; set; }
         public decimal score { get; set; }
 
         public string status { get; set; }
 
         
-        public Piece(int row, int col, PieceColor color)
+        public Piece(int row, int col, PieceColor color, int id)
         {
             this.location = new Tuple<int, int>(row, col);
             //this.pieceType = type;
             this.pieceColor = color;
             this.status = "alive";
+            this.id = id;
         }
 
 
@@ -33,7 +35,7 @@ namespace ChessAI.Model.util.Pieces
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            return sb.Append("(" + location.Item1 + ", " + location.Item2 + ", " + pieceType + ", " + pieceColor + ", " + status + ")").ToString();
+            return sb.Append("(" + location.Item1 + ", " + location.Item2 + ", " + pieceType + ", " + pieceColor + ", " + status + ", " + id + ")").ToString();
         }
 
         //public int GetMultiplier()

@@ -10,7 +10,7 @@ namespace ChessAI.Model.util.Pieces
     {
 
 
-        public Knight(int row, int col, PieceColor color) : base(row, col, color)
+        public Knight(int row, int col, PieceColor color, int id) : base(row, col, color,id)
         {
             pieceType = PieceType.Knight;
             score = 3;
@@ -59,12 +59,12 @@ namespace ChessAI.Model.util.Pieces
                     {
                         if (board[row + direction.Item1, col + direction.Item2] == "--")
                         {
-                            possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1, col + direction.Item2), board,this));
+                            possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1, col + direction.Item2), board,this.id));
                         }
                         if (board[row + direction.Item1, col + direction.Item2][0].Equals(opponent))
                         {
                             Piece target = gamestate.GetPieceAtLocation(Tuple.Create(row + direction.Item1, col + direction.Item2));
-                            possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1, col + direction.Item2), board, this,target));
+                            possibleKnightMoves.Add(new Move(Tuple.Create(row, col), Tuple.Create(row + direction.Item1, col + direction.Item2), board, this.id, target.id));
 
                         }
                     }
