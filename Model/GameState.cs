@@ -241,6 +241,7 @@ namespace ChessAI.Model
 
                 //Console.WriteLine("Castles moves: " + string.Join(", ", castleMoves));
                 validMoves.AddRange(whiteToPlay ? GetCastleMoves(whiteKingLocation) : GetCastleMoves(blackKingLocation));
+
             }
 
 
@@ -699,7 +700,7 @@ namespace ChessAI.Model
 
                 }
 
-                this.enpassant_possible_log.RemoveAt(enpassant_possible_log.Count - 1);
+                this.enpassant_possible_log.RemoveAt(enpassant_possible_log.Count-1);
                 if (enpassant_possible_log.Any())
                 {
                     enPassantPossible = enpassant_possible_log[enpassant_possible_log.Count - 1];
@@ -709,12 +710,15 @@ namespace ChessAI.Model
                     enPassantPossible = Tuple.Create(-1, -1);
                 }
 
+
                 this.castle_rights_log.RemoveAt(castle_rights_log.Count - 1);
 
                 if (castle_rights_log.Any())
                 {
-                    currentCastleRights = castle_rights_log[castle_rights_log.Count - 1];
+                    currentCastleRights = new CastleRights(castle_rights_log.Last().wKs,castle_rights_log.Last().wQs, castle_rights_log.Last().bKs, castle_rights_log.Last().bQs);
+                
                 }
+
 
                 if (lastMove.is_castle_move)
                 {

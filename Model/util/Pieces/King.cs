@@ -13,6 +13,7 @@ namespace ChessAI.Model.util.Pieces
         public King(int row, int col, PieceColor color, int id) : base(row, col, color,id)
         {
             pieceType = PieceType.King;
+            score = 0;
         }
 
         //public void InitializeKing(int row, int col, PieceColor color)

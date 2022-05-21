@@ -12,7 +12,7 @@ namespace ChessAI.Model.util.Pieces
         public Bishop(int row, int col, PieceColor color, int id) : base(row, col, color,id)
         {
             pieceType = PieceType.Bishop;
-            score = 30;
+            score = 3;
         }
 
         //public void InitializeBishop(int row, int col , PieceColor color)

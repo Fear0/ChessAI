@@ -20,5 +20,10 @@ namespace ChessAI.Model.util
             this.bKs = bks;
             this.bQs = bqs;
         }
+
+        public override string ToString()
+        {
+            return $"wKs: {wKs}, wQs: {wQs}, bKs: {bKs}, bQS: {bQs}";
+        }
     }
 }

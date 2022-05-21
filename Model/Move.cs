@@ -25,6 +25,7 @@ namespace ChessAI.Model
 
         public bool is_castle_move = false;
 
+       
         public Move(Tuple<int, int> startPos, Tuple<int, int> endPos, string[,] board, int source, int target = -1, bool isEnPassant = false, bool isCastle = false)
         {
             startPosition = startPos;
