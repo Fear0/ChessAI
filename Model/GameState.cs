@@ -412,6 +412,11 @@ namespace ChessAI.Model
             }
         }
 
+        public bool IsCheckmate()
+        {
+            return IsInCheck() && !GetValidMoves().Any();
+        }
+
         public bool IsSquareUnderAttack(Tuple<int, int> location)
         {
             //look if an opponent piece can attack the specified square

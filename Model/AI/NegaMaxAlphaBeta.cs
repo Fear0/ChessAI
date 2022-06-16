@@ -12,6 +12,7 @@ namespace ChessAI.Model.AI
 
 
         private Move nextMove = null;
+        public int numberPositions = 0;
         public NegaMaxAlphaBetaAgent(Func<GameState, double> evaluationFunction, int depth) : base(evaluationFunction, depth)
         {
 
@@ -20,6 +21,7 @@ namespace ChessAI.Model.AI
 
         public double NegaMaxAlphaBeta(GameState gameState, int depth, double alpha, double beta, int turn_multiplier)
         {
+            numberPositions++;
             if (depth == 0 || gameState.GameOver())
             {
                 return turn_multiplier * evaluationFunction(gameState);
@@ -27,6 +29,8 @@ namespace ChessAI.Model.AI
 
             double maxScore = (double)-EvaluationType1.CHECKMATE;
             var legalMoves = gameState.GetValidMoves();
+
+            legalMoves.OrderBy(move => move.pieceCaptured!= "--");
 
             //TODO change order of moves to leverage the AlphaBeta algorithm
 
@@ -61,7 +65,7 @@ namespace ChessAI.Model.AI
             }
             return maxScore;
         }
-        public override Move GetAction(GameState gameState, bool isMaximizingPlayer)
+        public override Move GetAction(GameState gameState, bool isMaximizingPlayer = false)
         {
 
             //Move move = null;

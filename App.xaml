@@ -2,8 +2,40 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ChessAI"
-             StartupUri="MainWindow.xaml">
+             >
+    <!--StartupUri="MainWindow.xaml"-->
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="BoardOutline" Color="#423936"/>
+            <SolidColorBrush x:Key="WhiteSquare" Color="#eeeed2"/>
+            <!--eeeed2-->
+            <SolidColorBrush x:Key="BlackSquare" Color="DarkCyan"/>
+            <Style x:Key="chessSquareStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+            <!-- #769656-->
+       
+        <Style x:Key="RoundedButton"  TargetType="Button">
+                <Setter Property="Background" Value="Purple"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border CornerRadius="20" Background="{TemplateBinding Background}" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="DarkGoldenrod"/>
+                    </Trigger>
+                </Style.Triggers>
+        </Style>
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

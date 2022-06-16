@@ -318,6 +318,7 @@ namespace ChessAI
                     Console.WriteLine(string.Join(", ", game.GetValidMoves()));
                     //Console.WriteLine("Before: " + game.currentCastleRights);
                     var bestMove = agent.GetAction(game, true);
+                    //Console.WriteLine(agent.numberPositions);
                     game.MakeMove(bestMove);
                     Console.WriteLine(game.ToString());
                     Console.WriteLine("After: " + game.currentCastleRights);

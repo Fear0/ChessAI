@@ -1,0 +1,57 @@
+﻿<Window x:Class="ChessAI.Views.ColorChoiceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChessAI.Views"
+        xmlns:viewModel="clr-namespace:ChessAI.ViewModels"
+        mc:Ignorable="d"
+        Title="ColorChoiceWindow" Height="150" Width="230"
+        BorderThickness="0"
+        BorderBrush="Indigo"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        x:Name="ColorChoice">
+
+    <Window.DataContext>
+        <viewModel:ChessViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Height="35">
+            <Border CornerRadius="0" BorderBrush="Black" BorderThickness="4">
+                <TextBlock TextAlignment="Center" Text="Pick Side" 
+                       HorizontalAlignment="Center" FontFamily="Sans Serif"
+                       VerticalAlignment="Top"
+                       TextWrapping="Wrap"
+                       Foreground="Purple"
+                       FontWeight="Black"
+                       FontSize="20" Margin="0,2,0,0"/>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" CornerRadius="0" BorderBrush="Black" BorderThickness="4 4 2 4">
+                <Button x:Name="BlackButton"  BorderThickness="0" Background="Transparent"
+                Width="100" Height="100" Click="BlackButton_Click"/>
+            </Border>
+            <Border Grid.Column="1" CornerRadius="0" BorderBrush="Black" BorderThickness="2 4 4 4">
+                <Button x:Name="WhiteButton"  BorderThickness="0" Background="Transparent"
+                Width="100" Height="100" Click="WhiteButton_Click"/>
+            </Border>
+        </Grid>
+
+    </Grid>
+</Window>

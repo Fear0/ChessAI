@@ -1,11 +1,71 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <StartupObject>ChessAI.Program</StartupObject>
+    <StartupObject>ChessAI.App</StartupObject>
+    <ApplicationIcon>Images\mainIcon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\Chess_bdt45.png" />
+    <None Remove="Images\Chess_blt45.png" />
+    <None Remove="Images\Chess_kdt45.png" />
+    <None Remove="Images\Chess_klt45.png" />
+    <None Remove="Images\Chess_ndt45.png" />
+    <None Remove="Images\Chess_nlt45.png" />
+    <None Remove="Images\Chess_pdt45.png" />
+    <None Remove="Images\Chess_plt45.png" />
+    <None Remove="Images\Chess_qdt45.png" />
+    <None Remove="Images\Chess_qlt45.png" />
+    <None Remove="Images\Chess_rdt45.png" />
+    <None Remove="Images\Chess_rlt45.png" />
+    <None Remove="SoundEffects\chess_move.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\Chess_bdt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_blt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_kdt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_klt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_ndt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_nlt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_pdt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_plt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_qdt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_qlt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_rdt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Chess_rlt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\mainIcon.ico" />
+    <Content Include="SoundEffects\chess_move.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>

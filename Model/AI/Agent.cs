@@ -17,13 +17,14 @@ namespace ChessAI.Model.AI
             this.index = index;
         }
         
-        public abstract Move GetAction(GameState gameState,bool isMaximizingPlayer);
+        public abstract Move GetAction(GameState gameState,bool isMaximizingPlayer = false);
     }
 
 
     internal abstract class MultiAgentSearchAgent: Agent
     {
         protected int DEPTH;
+        protected int numberPositions;
         protected Func<GameState, double> evaluationFunction = (gameState) => 0;
 
       
