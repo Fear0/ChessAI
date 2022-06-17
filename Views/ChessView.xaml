@@ -318,7 +318,7 @@
                     VerticalAlignment="Top" 
                     Width="151"
                     Click="OnClickNewGame"
-                    Command="{Binding NewGameCommand}"/>
+                    Command="{Binding NewGameVsSelfCommand}"/>
             <Button Style="{StaticResource RoundedButton}"
                     Content="New Game Vs Engine" 
                     HorizontalAlignment="Center" 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessAI.Model.AI
 {
-    internal abstract class Agent
+    public abstract class Agent
     {
         //An agent must define a getAction method. Depending on the algorithm, the agent will define a strategy that results in a specific move for a specific state
 

@@ -38,8 +38,7 @@ namespace ChessAI.ViewModels.Commands
 
             if (_chessViewModel.EngineIsWhite)
             {
-                _chessViewModel.SquareClickedCommand._squaresButtons = squaresButtons;
-                _chessViewModel.SquareClickedCommand.ExecuteAIMove();
+                CommandsOperations.ExecuteAIMove(_chessViewModel, squaresButtons);
             }
 
 

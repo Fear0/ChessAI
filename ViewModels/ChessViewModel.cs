@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace ChessAI.ViewModels
 {
-    internal class ChessViewModel : ViewModelBase
+    public class ChessViewModel : ViewModelBase
     {
 
         //public GameStateViewModel GameState { get; set; }
@@ -25,17 +25,19 @@ namespace ChessAI.ViewModels
 
         public bool EngineIsWhite = false;
 
-        public static Agent AI => new MinimaxAlphaBetaAgent(EvaluationType2.BoardEvaluationFunction, 4);
+        public static Agent AI => new NegaMaxAlphaBetaAgent(EvaluationType1.BoardEvaluationFunction, 4);
 
         public bool GameVsEngine = false;
 
+        public bool AIThinking = false;
         private string _gameStatus;
 
-        public  string GameStatus
+
+        public string GameStatus
         {
             get
             {
-            
+
                 return _gameStatus;
             }
             set
@@ -45,51 +47,37 @@ namespace ChessAI.ViewModels
             }
         }
 
-        public List<Tuple<int,int>> selected_squares;
-        public ICommand? SuggestMoveCommand { get; } 
+        public List<Tuple<int, int>> selected_squares;
+        public ICommand? SuggestMoveCommand { get; set; }
 
-        public SquareClickedCommand SquareClickedCommand { get; set; }
+        public ICommand? SquareClickedCommand { get; set; }
 
-        public ICommand? NewGameCommand { get; }
+        public ICommand? NewGameVsSelfCommand { get; set; }
 
-        public ICommand? NewGameVsEngineCommand { get; }
-        
+        public ICommand? NewGameVsEngineCommand { get; set; }
+
 
         public ChessViewModel()
         {
 
             GameState = new GameState();
-            selected_squares = new List<Tuple<int,int>>();
+            selected_squares = new List<Tuple<int, int>>();
             SuggestMoveCommand = new SuggestMoveCommand();
-            
-            NewGameCommand = new NewGameCommand(this);
+
+            NewGameVsSelfCommand = new NewGameVsSelfCommand(this);
             NewGameVsEngineCommand = new NewGameVsEngineCommand(this);
             SquareClickedCommand = new SquareClickedCommand(this);
 
-            
-
-            int i = 0;
-            /*Task.Run(() =>
-            {
-                while (i < 6)
-                {
-                    GameStatus = i.ToString();
-                    i++;
-                    Thread.Sleep(1000);
-                }
-            }
-            );*/
-         
         }
 
         public bool AIOnTurn()
         {
-            return (GameState.whiteToPlay && EngineIsWhite) || (!GameState.whiteToPlay && !EngineIsWhite);
+            return GameVsEngine && (GameState.whiteToPlay && EngineIsWhite) || (!GameState.whiteToPlay && !EngineIsWhite);
         }
 
         public Move GetAIMove()
         {
-            return AI.GetAction(GameState,false);
+            return AI.GetAction(GameState, false);
         }
     }
 }
