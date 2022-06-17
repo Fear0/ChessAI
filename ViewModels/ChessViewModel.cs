@@ -1,6 +1,7 @@
 ﻿using ChessAI.Model;
 using ChessAI.Model.AI;
 using ChessAI.ViewModels.Commands;
+using ChessAI.ViewModels.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,6 +29,13 @@ namespace ChessAI.ViewModels
         public static Agent AI => new NegaMaxAlphaBetaAgent(EvaluationType1.BoardEvaluationFunction, 4);
 
         public bool GameVsEngine = false;
+
+        public ObservableCollection<IconViewModel> _capturedWhitePieces = new();
+
+        public ObservableCollection<IconViewModel> _capturedBlackPieces  = new();
+
+        public ICollection<IconViewModel> CapturedWhitePieces => _capturedWhitePieces;
+        public ICollection<IconViewModel> CapturedBlackPieces => _capturedBlackPieces;
 
         public bool AIThinking = false;
         private string _gameStatus;
@@ -60,6 +68,8 @@ namespace ChessAI.ViewModels
         public ChessViewModel()
         {
 
+            //_capturedWhitePieces = new();
+            //_capturedBlackPieces = new();
             GameState = new GameState();
             selected_squares = new List<Tuple<int, int>>();
             SuggestMoveCommand = new SuggestMoveCommand();
@@ -67,6 +77,7 @@ namespace ChessAI.ViewModels
             NewGameVsSelfCommand = new NewGameVsSelfCommand(this);
             NewGameVsEngineCommand = new NewGameVsEngineCommand(this);
             SquareClickedCommand = new SquareClickedCommand(this);
+
 
         }
 

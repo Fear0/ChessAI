@@ -121,31 +121,31 @@
                 <TextBlock Text="2" Foreground="White" FontFamily="Century Gothic" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6"/>
                 <TextBlock Text="1" Foreground="White" FontFamily="Century Gothic" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="7"/>
             </Grid>
-            
+
             <!--Chessboard-->
             <Grid x:Name="chessboardGrid" Grid.Column="1" Grid.Row="1" >
-                
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <!--Row 0-->
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--Row 0-->
                 <Button  Grid.Row="0" Grid.Column="0" Background="{StaticResource WhiteSquare}" Style="{StaticResource chessSquareStyle}"/>
                 <!--<Button Style="{StaticResource chessSquareStyle}" /> -->
 
@@ -288,9 +288,50 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Column="1" Background="#eeeed2">
-            <TextBox HorizontalAlignment="Center" 
-                     Margin="0,200,0,0" 
+        <Grid x:Name="Panels" Grid.Column="1" Background="#eeeed2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Expander VerticalAlignment="Stretch" Foreground="Purple" Header="White Pieces" FontSize="15" FontFamily="Arial"  FontWeight="Black"   Grid.Row="0" IsExpanded="True">
+
+                    <ItemsControl ItemsSource="{Binding CapturedWhitePieces}"  VerticalAlignment="Top">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" x:Name="whiteLost"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="40" Height="40" Source="{Binding pieceImage}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </Expander>
+                <Expander VerticalAlignment="Stretch" Foreground="Purple" Header="Black Pieces" FontSize="15" FontFamily="Arial"  FontWeight="Black" Grid.Row="1">
+                    <ItemsControl ItemsSource="{Binding CapturedBlackPieces}"  VerticalAlignment="Top">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel x:Name="whiteLost"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="40" Height="40" Source="{Binding pieceImage}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+
+            </Grid>
+            <TextBox Grid.Row="0" HorizontalAlignment="Center" 
+                     Margin="0,250,0,0" 
                      TextWrapping="Wrap" 
                      TextAlignment="Center"
                      Text="{Binding GameStatus, UpdateSourceTrigger=PropertyChanged}" 
@@ -303,26 +344,27 @@
                      FontFamily="Sans Serif"
                      Foreground="Purple"
                      Background="Transparent"/>
-            <Button Style="{StaticResource RoundedButton}"
+            <Button Grid.Row="1" Style="{StaticResource RoundedButton}"
                     Content="Suggest Engine Move" 
                     HorizontalAlignment="Center" 
-                    Height="34" Margin="0,247,0,0" 
-                    VerticalAlignment="Top" 
+                    Height="34" Margin="0,50,0,0" 
+                    VerticalAlignment="Top"
                     Width="151"
                     Command="{Binding SuggestMoveCommand}"
                     />
-            <Button Style="{StaticResource RoundedButton}"
+            <Button Grid.Row="1" Style="{StaticResource RoundedButton}"
                     Content="New Game Vs Self" 
                     HorizontalAlignment="Center" 
-                    Height="34" Margin="0,300,0,0" 
+                    Height="34" Margin="0,100,0,0" 
                     VerticalAlignment="Top" 
                     Width="151"
                     Click="OnClickNewGame"
+                    Name="NewGameVsSelfButton"
                     Command="{Binding NewGameVsSelfCommand}"/>
-            <Button Style="{StaticResource RoundedButton}"
+            <Button Grid.Row="1" Style="{StaticResource RoundedButton}"
                     Content="New Game Vs Engine" 
                     HorizontalAlignment="Center" 
-                    Height="34" Margin="0,353,0,0" 
+                    Height="34" Margin="0,150,0,0" 
                     VerticalAlignment="Top" 
                     Width="151"
                     Click="OnClickNewGame"  

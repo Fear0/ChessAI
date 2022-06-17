@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ChessAI" 
         xmlns:views="clr-namespace:ChessAI.Views" xmlns:viewmodels="clr-namespace:ChessAI.ViewModels"
         mc:Ignorable="d"
-        Title="ChessAI" Height="600" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="ChessAI" Height="600" Width="830" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
  
     <Grid>
         <views:ChessView x:Name="chessView"/>

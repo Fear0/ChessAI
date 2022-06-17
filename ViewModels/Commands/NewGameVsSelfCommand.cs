@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace ChessAI.ViewModels.Commands
 {
@@ -20,6 +21,7 @@ namespace ChessAI.ViewModels.Commands
         public override void Execute(object? parameter)
         {
             //reinitiliaze everything
+           
             _chessViewModel.GameState = new Model.GameState();
             _chessViewModel.ValidMovesAtCurrentState = new List<Model.Move>();
             _chessViewModel.SuggestMoveCommand = new SuggestMoveCommand();

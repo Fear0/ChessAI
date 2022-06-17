@@ -50,6 +50,7 @@ namespace ChessAI.Views
 
             }
             NewGameVsEngineButton.CommandParameter = squaresButtons;
+           
             LoadNewGame();
            
         }

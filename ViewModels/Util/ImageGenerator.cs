@@ -17,14 +17,16 @@ using System.Windows;
 
 namespace ChessAI.ViewModels.Util
 {
-    internal class ImageGenerator
+    public class ImageGenerator
     {
 
-        public static Image GeneratePieceImage(char pieceChar, char color)
+        public static Image GeneratePieceImage(char pieceChar, char color, bool forExpander = false)
         {
             Image image = new Image() { IsHitTestVisible = false };
             image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
             image.Tag = pieceChar + ", " +  color;
+
+       
 
             string path = "";
          

@@ -21,7 +21,7 @@ namespace ChessAI.ViewModels
     /// </summary>
     public class CommandsOperations
     {
-        
+
 
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace ChessAI.ViewModels
                 Button deadPawnSquare;
                 if (_chessViewModel.GameState.whiteToPlay)
                 {
-                    deadPawnSquare = GetButtonAtPosition(new Tuple<int, int>(clickedPosition.Item1 + 1, clickedPosition.Item2),_squaresButtons);
+                    deadPawnSquare = GetButtonAtPosition(new Tuple<int, int>(clickedPosition.Item1 + 1, clickedPosition.Item2), _squaresButtons);
 
                 }
                 else
@@ -102,11 +102,67 @@ namespace ChessAI.ViewModels
                 }
 
             }
+            if (move.targetPieceId != -1)
+            {
+                Piece capturedPiece = _chessViewModel.GameState.GetPieceById(move.targetPieceId);
+                Tuple<char, char> pieceInChars = GetPieceInChars(capturedPiece);
+                //MessageBox.Show(pieceInChars.Item1 + "," + pieceInChars.Item2);
+                if (capturedPiece.pieceColor == PieceColor.Black)
+                {
 
+                    _chessViewModel._capturedBlackPieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2,true)));
+                }
+                else
+                {
+                    _chessViewModel._capturedWhitePieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2,true)));
+                }
+
+            }
             //logical execution of move
             _chessViewModel.GameState.MakeMove(move);
 
 
+        }
+
+        public static Tuple<char, char> GetPieceInChars(Piece piece)
+        {
+            char pieceChar = ' ';
+            char pieceColor = ' ';
+            switch (piece.pieceType)
+            {
+                case PieceType.King:
+                    pieceChar = 'k';
+                    break;
+                case PieceType.Queen:
+                    pieceChar = 'q';
+                    break;
+                case PieceType.Bishop:
+                    pieceChar = 'b';
+                    break;
+                case PieceType.Knight:
+                    pieceChar = 'n';
+                    break;
+                case PieceType.Pawn:
+                    pieceChar = 'p';
+                    break;
+                case PieceType.Rook:
+                    pieceChar = 'r';
+                    break;
+                default:
+                    break;
+            }
+            switch (piece.pieceColor)
+            {
+
+                case PieceColor.White:
+                    pieceColor = 'w';
+                    break;
+                case PieceColor.Black:
+                    pieceColor = 'b';
+                    break;
+
+            }
+            return new Tuple<char, char>(pieceChar, pieceColor);
         }
 
 
@@ -133,7 +189,21 @@ namespace ChessAI.ViewModels
                     {
                         System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Users\ASUS\Uni\MyProjects\ChessAI\SoundEffects\chess_move.wav");
 
-                        MakeMove(AIMove, _squaresButtons,_chessViewModel);
+                        MakeMove(AIMove, _squaresButtons, _chessViewModel);
+                        if (AIMove.targetPieceId != -1)
+                        {
+                            Piece capturedPiece = _chessViewModel.GameState.GetPieceById(AIMove.targetPieceId);
+                            Tuple<char, char> pieceInChars = GetPieceInChars(capturedPiece);
+                            if (capturedPiece.pieceColor == PieceColor.Black)
+                            {
+
+                                _chessViewModel.CapturedBlackPieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2)));
+                            }
+                            else
+                            {
+                                _chessViewModel.CapturedWhitePieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2)));
+                            }
+                        }
                         _chessViewModel.AIThinking = false;
                     }
 
@@ -285,11 +355,11 @@ namespace ChessAI.ViewModels
             if (moves.Any())
             {
                 _chessViewModel.selected_squares.Add(moves[0].startPosition);
-                SelectSquare(moves[0].startPosition,_squaresButtons, true);
+                SelectSquare(moves[0].startPosition, _squaresButtons, true);
                 foreach (var move in moves)
                 {
                     _chessViewModel.selected_squares.Add(move.endPosition);
-                    SelectSquare(move.endPosition,_squaresButtons);
+                    SelectSquare(move.endPosition, _squaresButtons);
                 }
             }
         }
@@ -298,7 +368,7 @@ namespace ChessAI.ViewModels
         {
             foreach (var square in _chessViewModel.selected_squares)
             {
-                DeselectSquare(square,_squaresButtons);
+                DeselectSquare(square, _squaresButtons);
 
             }
         }
@@ -340,7 +410,7 @@ namespace ChessAI.ViewModels
         /// </summary>
         /// <param name="piece"></param>
         /// <returns></returns>
-        public static bool PieceOnTurn(Piece piece,ChessViewModel _chessViewModel)
+        public static bool PieceOnTurn(Piece piece, ChessViewModel _chessViewModel)
         {
             if ((piece.pieceColor == PieceColor.White && _chessViewModel.GameState.whiteToPlay)
                 || (piece.pieceColor == PieceColor.Black && !_chessViewModel.GameState.whiteToPlay))
