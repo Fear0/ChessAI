@@ -2,7 +2,10 @@ ChessAI
 =======
 A personal implementation of a chess game using the **WPF** (Windows Presentation Forms) framework from .NET
 
-The game implements the **MVVM design Pattern**.
+The game implements the **MVVM design Pattern**. 
+
+The focus in this project was to implement AI algorithms in order to build a decent engine. The interface supports basic functionalities to visualize the game.
+For the moment, **negamax** and **minimax** were implemented. In the near future, I will be tackling **Monte Carlo Tree Search**.
 
 Run
 ------
