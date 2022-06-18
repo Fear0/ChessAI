@@ -1,8 +1,8 @@
 ChessAI
 =======
-A personal implementation of a chess game using the WPF framework from .NET
+A personal implementation of a chess game using the **WPF** (Windows Presentation Forms) framework from .NET
 
-The game implements the **MVVM design Pattern** .
+The game implements the **MVVM design Pattern**.
 
 Run
 ------
