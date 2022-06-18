@@ -110,11 +110,11 @@ namespace ChessAI.ViewModels
                 if (capturedPiece.pieceColor == PieceColor.Black)
                 {
 
-                    _chessViewModel._capturedBlackPieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2,true)));
+                    _chessViewModel.CapturedBlackPieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2)));
                 }
                 else
                 {
-                    _chessViewModel._capturedWhitePieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2,true)));
+                    _chessViewModel.CapturedWhitePieces.Add(new IconViewModel(ImageGenerator.GeneratePieceImage(pieceInChars.Item1, pieceInChars.Item2)));
                 }
 
             }
@@ -171,9 +171,22 @@ namespace ChessAI.ViewModels
             return _squaresButtons.Where(e => e.Tag.Equals(position)).First();
         }
 
-
-        static public void ExecuteAIMove(ChessViewModel _chessViewModel, IEnumerable<Button> _squaresButtons)
+        /// <summary>
+        /// computes the AI suggestion for a particular position asynchroniously
+        /// </summary>
+        /// <param name="_chessViewModel"></param>
+        /// <returns></returns>
+        public static async Task<Move> GetAIMove(ChessViewModel _chessViewModel)
         {
+            //Move move = null;
+            await Task.Run(() => _chessViewModel.GetAIMove());
+            return _chessViewModel.EngineMove;
+           
+        }
+        public static void ExecuteAIMove(ChessViewModel _chessViewModel, IEnumerable<Button> _squaresButtons)
+        {
+
+     
             if (_chessViewModel.AIOnTurn())
             {
                 Task AITask = Task<Move>.Run(() =>
@@ -185,10 +198,12 @@ namespace ChessAI.ViewModels
                 {
                     Move AIMove = task.Result;
 
+
+             
                     if (AIMove != null)
                     {
-                        System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Users\ASUS\Uni\MyProjects\ChessAI\SoundEffects\chess_move.wav");
 
+                        
                         MakeMove(AIMove, _squaresButtons, _chessViewModel);
                         if (AIMove.targetPieceId != -1)
                         {
@@ -212,9 +227,14 @@ namespace ChessAI.ViewModels
 
                     // update gamestatus accordingly
                     UpdateGameStatus(_chessViewModel);
-
+                    SelectSquare(AIMove.startPosition, _squaresButtons);
+                    SelectSquare(AIMove.endPosition, _squaresButtons);
+                    _chessViewModel.selected_squares.Add(AIMove.startPosition);
+                    _chessViewModel.selected_squares.Add(AIMove.endPosition);
                 }, TaskScheduler.FromCurrentSynchronizationContext());
             }
+     
+           
         }
 
         static public void MakeMove(Move move, IEnumerable<Button> _squaresButtons, ChessViewModel _chessViewModel)
@@ -372,6 +392,15 @@ namespace ChessAI.ViewModels
 
             }
         }
+
+        public static void DeselectSquares(List<Tuple<int,int>> squares, IEnumerable<Button> _squaresButtons)
+        {
+            foreach (var square in squares)
+            {
+                DeselectSquare(square, _squaresButtons);
+
+            }
+        }
         /// <summary>
         /// graphically highlights the square on the chessboard
         /// </summary>
@@ -379,6 +408,7 @@ namespace ChessAI.ViewModels
         public static void SelectSquare(Tuple<int, int> position, IEnumerable<Button> _squaresButtons, bool pieceSquare = false)
         {
             Button button = _squaresButtons.Where(but => but.Tag.Equals(position)).First();
+            //MessageBox.Show(button.Tag.ToString());
             if (pieceSquare)
             {
                 ((Grid)button.Content).Children.Add(GenerateSelectedSquare(Brushes.Magenta));

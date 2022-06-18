@@ -24,7 +24,7 @@ namespace ChessAI.ViewModels.Commands
            
             _chessViewModel.GameState = new Model.GameState();
             _chessViewModel.ValidMovesAtCurrentState = new List<Model.Move>();
-            _chessViewModel.SuggestMoveCommand = new SuggestMoveCommand();
+            _chessViewModel.SuggestMoveCommand = new SuggestMoveCommand(_chessViewModel);
             _chessViewModel.NewGameVsSelfCommand = new NewGameVsSelfCommand(_chessViewModel);
             _chessViewModel.SquareClickedCommand = new SquareClickedCommand(_chessViewModel);
             _chessViewModel.Checkmate = false;
@@ -32,6 +32,12 @@ namespace ChessAI.ViewModels.Commands
             _chessViewModel.GameVsEngine = false;
             _chessViewModel.EngineIsWhite = false;
             _chessViewModel.AIThinking = false;
+            _chessViewModel.AlreadySuggested = false;
+            _chessViewModel.Suggesting = false;
+            _chessViewModel.CapturedBlackPieces.Clear();
+            _chessViewModel.CapturedWhitePieces.Clear();
+            _chessViewModel.AI_selected_squares.Clear();
+            _chessViewModel.selected_squares.Clear();
         }
     }
 }

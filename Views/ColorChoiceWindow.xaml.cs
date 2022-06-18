@@ -23,6 +23,7 @@ namespace ChessAI.Views
 
         public char Color { get; set; }
 
+        public char Difficulty { get; set; }
         public ColorChoiceWindow()
         {
             InitializeComponent();
@@ -31,16 +32,53 @@ namespace ChessAI.Views
             WhiteButton.Content = ImageGenerator.GeneratePieceImage('k', 'w');
         }
 
-        private void BlackButton_Click(object sender, RoutedEventArgs e)
+        /*private void BlackButton_Click(object sender, RoutedEventArgs e)
         {
             Color = 'b';
-            Close();
+            //Close();
         }
 
         private void WhiteButton_Click(object sender, RoutedEventArgs e)
         {
             Color = 'w';
-            Close();
+            //Close();
+        }*/
+
+        private void BlackKing_Checked(object sender, RoutedEventArgs e)
+        {
+            Color = 'b';
+            if (Difficulty == 'h' || Difficulty == 'm')
+            {
+                Close();
+            }
+
+        }
+
+        private void WhiteKing_Checked(object sender, RoutedEventArgs e)
+        {
+            Color = 'w';
+            if (Difficulty == 'h' || Difficulty == 'm')
+            {
+                Close();
+            }
+        }
+
+        private void mediumBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Difficulty = 'm';
+            if (Color == 'b' || Color == 'w')
+            {
+                Close();
+            }
+        }
+
+        private void hardBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Difficulty = 'h';
+            if (Color == 'b' || Color == 'w')
+            {
+                Close();
+            }
         }
     }
 }

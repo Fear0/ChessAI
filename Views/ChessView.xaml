@@ -289,18 +289,11 @@
         </Grid>
 
         <Grid x:Name="Panels" Grid.Column="1" Background="#eeeed2">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Expander VerticalAlignment="Stretch" Foreground="Purple" Header="White Pieces" FontSize="15" FontFamily="Arial"  FontWeight="Black"   Grid.Row="0" IsExpanded="True">
+            <Border BorderThickness="0 5 5 5" BorderBrush="{StaticResource BoardOutline}" >
+                <StackPanel VerticalAlignment="Stretch">
+                <Expander HorizontalAlignment="Left" Foreground="BlueViolet" Header="White Pieces" FontSize="15" FontFamily="Arial"  FontWeight="Black" Margin="10 15 10 10" IsExpanded="True">
 
-                    <ItemsControl ItemsSource="{Binding CapturedWhitePieces}"  VerticalAlignment="Top">
+                    <ItemsControl ItemsSource="{Binding CapturedWhitePieces}"  VerticalAlignment="Top" >
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel Orientation="Horizontal" x:Name="whiteLost"/>
@@ -308,13 +301,13 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Image Width="40" Height="40" Source="{Binding pieceImage}"/>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="35" Height="35" Source="{Binding pieceImage}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
                 </Expander>
-                <Expander VerticalAlignment="Stretch" Foreground="Purple" Header="Black Pieces" FontSize="15" FontFamily="Arial"  FontWeight="Black" Grid.Row="1">
+                <Expander HorizontalAlignment="Left" Foreground="BlueViolet" Header="Black Pieces" FontSize="15" FontFamily="Arial"  FontWeight="Black" Margin="10 15 10 10" IsExpanded ="True">
                     <ItemsControl ItemsSource="{Binding CapturedBlackPieces}"  VerticalAlignment="Top">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -323,15 +316,15 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Image Width="40" Height="40" Source="{Binding pieceImage}"/>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="35" Height="35" Source="{Binding pieceImage}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Expander>
 
-            </Grid>
-            <TextBox Grid.Row="0" HorizontalAlignment="Center" 
-                     Margin="0,250,0,0" 
+     
+            <TextBox  HorizontalAlignment="Center" 
+                     Margin="0,5,0,10" 
                      TextWrapping="Wrap" 
                      TextAlignment="Center"
                      Text="{Binding GameStatus, UpdateSourceTrigger=PropertyChanged}" 
@@ -344,32 +337,43 @@
                      FontFamily="Sans Serif"
                      Foreground="Purple"
                      Background="Transparent"/>
-            <Button Grid.Row="1" Style="{StaticResource RoundedButton}"
+            <Button  Style="{StaticResource RoundedButton}"
                     Content="Suggest Engine Move" 
                     HorizontalAlignment="Center" 
-                    Height="34" Margin="0,50,0,0" 
+                    Height="34" Margin="0,5,0,0" 
                     VerticalAlignment="Top"
                     Width="151"
+                    Name="SuggestEngineMoveButton"
                     Command="{Binding SuggestMoveCommand}"
                     />
-            <Button Grid.Row="1" Style="{StaticResource RoundedButton}"
+            <Button  Style="{StaticResource RoundedButton}"
                     Content="New Game Vs Self" 
                     HorizontalAlignment="Center" 
-                    Height="34" Margin="0,100,0,0" 
+                    Height="34" Margin="0,10,0,0" 
                     VerticalAlignment="Top" 
                     Width="151"
                     Click="OnClickNewGame"
                     Name="NewGameVsSelfButton"
                     Command="{Binding NewGameVsSelfCommand}"/>
-            <Button Grid.Row="1" Style="{StaticResource RoundedButton}"
+            <Button  Style="{StaticResource RoundedButton}"
                     Content="New Game Vs Engine" 
                     HorizontalAlignment="Center" 
-                    Height="34" Margin="0,150,0,0" 
+                    Height="34" Margin="0,10,0,0" 
                     VerticalAlignment="Top" 
                     Width="151"
                     Click="OnClickNewGame"  
                     Name="NewGameVsEngineButton"
                     Command="{Binding NewGameVsEngineCommand}"/>
+
+     
+                <!--<Ellipse StrokeThickness="2" Stroke="Black"  Margin="0 20 0 15" Width="80" Height="80">
+                    <Ellipse.Fill>
+                        <ImageBrush x:Name="fear" ImageSource="/Images/fear.png"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock FontFamily="Andalus" FontSize="14" FontWeight="Black" Foreground="DarkOliveGreen" Text="Fear" HorizontalAlignment="Center" Margin="-20" Height="20"/> -->
+            </StackPanel>
+            </Border>
         </Grid>
 
 

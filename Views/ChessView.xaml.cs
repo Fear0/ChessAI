@@ -50,7 +50,9 @@ namespace ChessAI.Views
 
             }
             NewGameVsEngineButton.CommandParameter = squaresButtons;
-           
+            SuggestEngineMoveButton.CommandParameter = squaresButtons;
+            //fear.ImageSource = new BitmapImage(new Uri("/Images/fear.png", UriKind.Relative));
+        
             LoadNewGame();
            
         }

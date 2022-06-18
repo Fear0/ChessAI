@@ -22,6 +22,7 @@
     <None Remove="Images\Chess_qlt45.png" />
     <None Remove="Images\Chess_rdt45.png" />
     <None Remove="Images\Chess_rlt45.png" />
+    <None Remove="Images\fear.png" />
     <None Remove="SoundEffects\chess_move.wav" />
   </ItemGroup>
 
@@ -60,6 +61,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Chess_rlt45.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\fear.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\mainIcon.ico" />

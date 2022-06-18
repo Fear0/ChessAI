@@ -36,6 +36,25 @@
                 </Style.Triggers>
         </Style>
 
+        <Style x:Key="ColorChoiceButton" TargetType="ToggleButton">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border CornerRadius="50" Background="{TemplateBinding Background}" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Background" Value="Magenta"/>
+                    </Trigger>
+                </Style.Triggers>
+         </Style>
+
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,4 +1,5 @@
-﻿using ChessAI.Views;
+﻿using ChessAI.Model.AI;
+using ChessAI.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,12 +30,19 @@ namespace ChessAI.ViewModels.Commands
             Application.Current.MainWindow.Effect = null;
 
 
-            _chessViewModel.EngineIsWhite = win.Color == 'w'? false : true;
+            _chessViewModel.EngineIsWhite = win.Color != 'w';
+            _chessViewModel.AI = new NegaMaxAlphaBetaAgent(EvaluationType1.BoardEvaluationFunction, win.Difficulty == 'm'? 4 : 5);
             _chessViewModel.GameState = new Model.GameState();
             _chessViewModel.ValidMovesAtCurrentState = new List<Model.Move>();
             _chessViewModel.Checkmate = false;
             _chessViewModel.GameStatus = "";
             _chessViewModel.GameVsEngine = true;
+            _chessViewModel.Suggesting = false;
+            _chessViewModel.AlreadySuggested = false;
+            _chessViewModel.CapturedBlackPieces.Clear();
+            _chessViewModel.CapturedWhitePieces.Clear();
+            _chessViewModel.AI_selected_squares.Clear();
+            _chessViewModel.selected_squares.Clear();
 
             if (_chessViewModel.EngineIsWhite)
             {

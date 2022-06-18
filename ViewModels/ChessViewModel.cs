@@ -26,18 +26,31 @@ namespace ChessAI.ViewModels
 
         public bool EngineIsWhite = false;
 
-        public static Agent AI => new NegaMaxAlphaBetaAgent(EvaluationType1.BoardEvaluationFunction, 4);
+        public Agent AI = new NegaMaxAlphaBetaAgent(EvaluationType1.BoardEvaluationFunction, 4);
 
         public bool GameVsEngine = false;
 
-        public ObservableCollection<IconViewModel> _capturedWhitePieces = new();
+        private ObservableCollection<IconViewModel> _capturedWhitePieces = new();
 
-        public ObservableCollection<IconViewModel> _capturedBlackPieces  = new();
+        private ObservableCollection<IconViewModel> _capturedBlackPieces  = new();
+
+        //public Tuple<Tuple<int, int>, Tuple<int, int>> AIMovePositions = null;
 
         public ICollection<IconViewModel> CapturedWhitePieces => _capturedWhitePieces;
         public ICollection<IconViewModel> CapturedBlackPieces => _capturedBlackPieces;
 
+        // if engine is computing AI's turn
         public bool AIThinking = false;
+
+        // flag signals if engine is computing move to be recommended
+        public bool Suggesting = false;
+
+        // if recommended move already displayed
+        public bool AlreadySuggested = false;
+
+        public Move EngineMove;
+
+        
         private string _gameStatus;
 
 
@@ -56,6 +69,8 @@ namespace ChessAI.ViewModels
         }
 
         public List<Tuple<int, int>> selected_squares;
+
+        public List<Tuple<int, int>> AI_selected_squares;
         public ICommand? SuggestMoveCommand { get; set; }
 
         public ICommand? SquareClickedCommand { get; set; }
@@ -72,7 +87,8 @@ namespace ChessAI.ViewModels
             //_capturedBlackPieces = new();
             GameState = new GameState();
             selected_squares = new List<Tuple<int, int>>();
-            SuggestMoveCommand = new SuggestMoveCommand();
+            AI_selected_squares = new();
+            SuggestMoveCommand = new SuggestMoveCommand(this);
 
             NewGameVsSelfCommand = new NewGameVsSelfCommand(this);
             NewGameVsEngineCommand = new NewGameVsEngineCommand(this);
@@ -88,7 +104,8 @@ namespace ChessAI.ViewModels
 
         public Move GetAIMove()
         {
-            return AI.GetAction(GameState, false);
+            EngineMove = AI.GetAction(GameState);
+            return EngineMove;
         }
     }
 }

@@ -24,13 +24,13 @@ namespace ChessAI.ViewModels.Util
         {
             Image image = new Image() { IsHitTestVisible = false };
             image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
-            image.Tag = pieceChar + ", " +  color;
+            image.Tag = pieceChar + ", " + color;
 
-       
+
 
             string path = "";
-         
-            switch(pieceChar)
+
+            switch (pieceChar)
             {
                 case 'p':
                     if (color == 'w')
@@ -106,9 +106,9 @@ namespace ChessAI.ViewModels.Util
                     break;
 
             }
-         
-            
-            image.Source = new BitmapImage(new Uri(path,UriKind.Relative));
+
+
+            image.Source = new BitmapImage(new Uri(path, UriKind.Relative));
             //image.Source = null;
             return image;
         }

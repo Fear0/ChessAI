@@ -11,6 +11,9 @@ using ChessAI.Model.util.Pieces;
 
 namespace ChessAI
 {
+    /// <summary>
+    /// This class was used for debugging
+    /// </summary>
     internal class Program
     {
 
